@@ -1,2 +1,15 @@
-flask
-flasgger
+# Flask framework
+Flask==3.0.0
+flask-cors==4.0.0
+
+# Baza danych
+Flask-SQLAlchemy==3.1.1
+
+# Swagger/dokumentacja API
+flasgger==0.9.7.1
+
+# QR code generation (opcjonalnie - do generowania obrazków QR)
+#qrcode==7.4.2
+
+# Utilities
+python-dotenv==1.0.0

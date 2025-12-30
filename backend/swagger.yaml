@@ -1,0 +1,262 @@
+swagger: "2.0"
+info:
+  title: "SCANAR API - System kontroli dostępu"
+  description: "API dla systemu weryfikacji dostępu pracowników (QR + rozpoznawanie twarzy)"
+  version: "1.0.0"
+  contact:
+    name: "SCANAR Team"
+
+host: "localhost:5000"
+basePath: "/api"
+schemes:
+  - "http"
+
+tags:
+  - name: "Verification"
+    description: "Endpointy weryfikacji dostępu"
+  - name: "Employees"
+    description: "Zarządzanie pracownikami"
+
+paths:
+  /verification/qr:
+    post:
+      tags:
+        - "Verification"
+      summary: "Weryfikacja QR kodu"
+      description: "Skanuje QR kod i zwraca dane pracownika"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Dane QR kodu do weryfikacji"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - qr_data
+            properties:
+              qr_data:
+                type: "string"
+                example: "a1b2c3d4e5f6..."
+                description: "Hash QR kodu pracownika"
+      responses:
+        200:
+          description: "QR kod zweryfikowany poprawnie"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Witaj, Jan Kowalski"
+              employee:
+                type: "object"
+                properties:
+                  id:
+                    type: "integer"
+                    example: 1
+                  name:
+                    type: "string"
+                    example: "Jan Kowalski"
+                  position:
+                    type: "string"
+                    example: "Engineer"
+                  department:
+                    type: "string"
+                    example: "IT"
+                  qr_code_hash:
+                    type: "string"
+                  is_active:
+                    type: "boolean"
+                  created_at:
+                    type: "string"
+                    format: "date-time"
+        400:
+          description: "Brak danych QR"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Brak danych QR kodu"
+              employee:
+                type: "null"
+        404:
+          description: "Nie znaleziono pracownika"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Nie znaleziono pracownika dla podanego QR kodu"
+              employee:
+                type: "null"
+        500:
+          description: "Błąd serwera"
+
+  /manage_employees/:
+    post:
+      tags:
+        - "Employees"
+      summary: "Dodaj nowego pracownika"
+      description: "Tworzy nowego pracownika i automatycznie generuje QR kod"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Dane nowego pracownika"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - name
+            properties:
+              name:
+                type: "string"
+                example: "Jan Kowalski"
+                description: "Imię i nazwisko pracownika"
+              position:
+                type: "string"
+                example: "Engineer"
+                description: "Stanowisko"
+              department:
+                type: "string"
+                example: "IT"
+                description: "Dział"
+      responses:
+        201:
+          description: "Pracownik utworzony"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Pracownik utworzony pomyślnie"
+              employee:
+                type: "object"
+                properties:
+                  id:
+                    type: "integer"
+                  name:
+                    type: "string"
+                  position:
+                    type: "string"
+                  department:
+                    type: "string"
+                  qr_code_hash:
+                    type: "string"
+                  is_active:
+                    type: "boolean"
+                  created_at:
+                    type: "string"
+              qr_code:
+                type: "string"
+                example: "a1b2c3d4e5f6..."
+                description: "Wygenerowany hash QR kodu"
+        400:
+          description: "Błąd walidacji"
+        500:
+          description: "Błąd serwera"
+    
+    get:
+      tags:
+        - "Employees"
+      summary: "Pobierz listę pracowników"
+      description: "Zwraca wszystkich aktywnych pracowników"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Lista pracowników"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+              employees:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    id:
+                      type: "integer"
+                    name:
+                      type: "string"
+                    position:
+                      type: "string"
+                    department:
+                      type: "string"
+                    qr_code_hash:
+                      type: "string"
+                    is_active:
+                      type: "boolean"
+                    created_at:
+                      type: "string"
+        500:
+          description: "Błąd serwera"
+
+  /manage_employees/{employee_id}:
+    get:
+      tags:
+        - "Employees"
+      summary: "Pobierz dane pracownika"
+      description: "Zwraca szczegóły pracownika po ID"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          description: "ID pracownika"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Dane pracownika"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+              employee:
+                type: "object"
+        404:
+          description: "Nie znaleziono pracownika"
+        500:
+          description: "Błąd serwera"
+
+definitions:
+  Employee:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      position:
+        type: "string"
+      department:
+        type: "string"
+      qr_code_hash:
+        type: "string"
+      is_active:
+        type: "boolean"
+      created_at:
+        type: "string"
+        format: "date-time"

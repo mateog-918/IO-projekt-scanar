@@ -1,11 +1,24 @@
 from flask import Flask
-from flask import request, make_response
+from flask import request, make_response, send_from_directory
 from flasgger import Swagger
 import re
+import os
+from flask_sqlalchemy import SQLAlchemy
+from app.models.employee import db
 
 def create_app():
     app = Flask(__name__)
     Swagger(app)
+
+    #Konfiguracja bazy danych
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scanar.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(app)
+
+    #Tworzenie tabel w bazie danych
+    with app.app_context():
+        db.create_all()
 
     @app.route('/')
     def home():
@@ -13,7 +26,7 @@ def create_app():
     
     @app.route("/swagger.yaml")
     def swagger_spec():
-        return app.send_static_file("swagger.yaml")
+        return send_from_directory(os.path.dirname(__file__), 'swagger.yaml')
     
     @app.after_request
     def add_cors_headers(response):
@@ -35,6 +48,13 @@ def create_app():
         response.headers['Access-Control-Allow-Headers'] = "*"
 
         return response
+    
+    #Register blueprints
+    from app.api.verification import verification_bp
+    app.register_blueprint(verification_bp, url_prefix='/api/verification')
+
+    from app.api.manage_employees import employees_bp
+    app.register_blueprint(employees_bp, url_prefix='/api/manage_employees')
     
     return app
 
