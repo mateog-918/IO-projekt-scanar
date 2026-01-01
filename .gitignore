@@ -12,7 +12,6 @@ dist/
 build/
 
 # Flask
-instance/
 .webassets-cache
 
 # Database
