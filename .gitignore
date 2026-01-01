@@ -15,7 +15,7 @@ build/
 .webassets-cache
 
 # Database
-*.db
+
 *.sqlite
 *.sqlite3
 
