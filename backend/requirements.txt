@@ -13,3 +13,15 @@ flasgger==0.9.7.1
 
 # Utilities
 python-dotenv==1.0.0
+cmake
+# Image / array libraries
+numpy==1.24.0
+# Use newer Pillow with prebuilt wheels for macOS/Python 3.11+
+Pillow>=9.5.0
+
+# Face recognition (depends on dlib). Note: dlib may need system build tools or conda.
+face_recognition==1.3.0
+
+# Development / testing
+wheel>=0.40.0
+
