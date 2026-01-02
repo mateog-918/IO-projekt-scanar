@@ -5,6 +5,7 @@ __pycache__/
 *.so
 .Python
 venv/
+venv11/
 env/
 ENV/
 *.egg-info/
@@ -12,11 +13,10 @@ dist/
 build/
 
 # Flask
-instance/
 .webassets-cache
 
 # Database
-*.db
+
 *.sqlite
 *.sqlite3
 

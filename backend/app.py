@@ -10,8 +10,11 @@ def create_app():
     app = Flask(__name__)
     Swagger(app)
 
-    #Konfiguracja bazy danych
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///scanar.db'
+    #Konfiguracja bazy danych - używamy ścieżki bezwzględnej do folderu instance
+    instance_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'instance')
+    os.makedirs(instance_path, exist_ok=True)  # Tworzymy folder instance jeśli nie istnieje
+    db_path = os.path.join(instance_path, 'scanar.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)

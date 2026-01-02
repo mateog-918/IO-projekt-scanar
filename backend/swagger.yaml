@@ -241,22 +241,129 @@ paths:
         500:
           description: "Błąd serwera"
 
+  /manage_employees/{employee_id}/faces:
+    post:
+      tags:
+        - "Employees"
+      summary: "Dodaj zdjęcie twarzy pracownika"
+      description: "Dodaje zdjęcie twarzy i przechowuje embedding (max 5 zdjęć na pracownika). Uses fixed matching tolerance of 0.6 for any comparisons."
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          description: "ID pracownika"
+          required: true
+          type: "integer"
+        - in: "formData"
+          name: "image"
+          type: "file"
+          required: true
+          description: "Plik obrazu z twarzą"
+      responses:
+        200:
+          description: "Obraz dodany"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Image added"
+              image_path:
+                type: "string"
+                example: "static/face_images/1_abcd1234.jpg"
+              count:
+                type: "integer"
+                example: 1
+        400:
+          description: "Błąd walidacji (np. brak obrazu, brak twarzy, limit osiągnięty)"
+        404:
+          description: "Nie znaleziono pracownika"
+        500:
+          description: "Błąd serwera"
+
+  /verification/employees/{employee_id}/match:
+    post:
+      tags:
+        - "Verification"
+      summary: "Porównaj przesłane zdjęcie z encodigami pracownika"
+      description: "Przesyła obraz i zwraca czy dopasowano do jednego z zapisanych encodigów. Uses a fixed matching tolerance of 0.6 (not configurable via the API)."
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+        - in: "formData"
+          name: "image"
+          type: "file"
+          required: true
+          description: "Plik obrazu z twarzą"
+      responses:
+        200:
+          description: "Zwraca wynik dopasowania"
+          schema:
+            type: "object"
+            properties:
+              match:
+                type: "boolean"
+                example: true
+        400:
+          description: "Brak obrazu lub brak twarzy w obrazie"
+        404:
+          description: "Nie znaleziono pracownika"
+        500:
+          description: "Błąd serwera"
+
 definitions:
   Employee:
     type: "object"
+    required:
+      - id
+      - name
     properties:
       id:
         type: "integer"
+        description: "Unikalne ID pracownika"
+        example: 1
       name:
         type: "string"
+        description: "Imię i nazwisko pracownika"
+        example: "Jan Kowalski"
       position:
         type: "string"
+        description: "Stanowisko pracownika"
+        example: "Engineer"
       department:
         type: "string"
+        description: "Dział"
+        example: "IT"
       qr_code_hash:
         type: "string"
+        description: "Hash powiązany z wygenerowanym QR kodem"
       is_active:
         type: "boolean"
+        description: "Czy konto pracownika jest aktywne"
       created_at:
         type: "string"
         format: "date-time"
+        description: "Data utworzenia rekordu"
+      face_image_paths:
+        type: "array"
+        description: "Lista ścieżek do zapisanych zdjęć twarzy (maksymalnie 5)"
+        items:
+          type: "string"
+        example: ["static/face_images/1_a.jpg", "static/face_images/1_b.jpg"]
+      face_encoding_count:
+        type: "integer"
+        description: "Liczba zapisanych wektorów twarzy (encodingów) dla pracownika"
+        example: 2
