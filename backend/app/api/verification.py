@@ -4,6 +4,7 @@ Blueprints for verification-related API endpoints.
 
 from flask import Blueprint, request, jsonify
 from app.services.qr_service import QRService
+from app.services.face_recog import matches_face_image
 from app.models.employee import Employee
 
 
@@ -66,7 +67,7 @@ def match_employee_face(employee_id):
             return jsonify({'error': 'Employee not found'}), 404
 
         try:
-            match = emp.matches_face_image(image_bytes, tolerance=tolerance)
+            match = matches_face_image(emp, image_bytes, tolerance=tolerance)
         except RuntimeError as e:
             return jsonify({'error': str(e)}), 500
 

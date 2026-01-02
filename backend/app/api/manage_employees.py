@@ -7,6 +7,7 @@ import numpy as np
 from PIL import Image
 
 from app.services.qr_service import QRService
+from app.services.face_recog import add_face_encoding, count_face_encodings
 from app.models.employee import db, Employee
 
 
@@ -67,7 +68,7 @@ def add_employee_face(employee_id):
             return jsonify({'success': False, 'message': 'Employee not found'}), 404
 
         # Check available slot
-        if emp.count_face_encodings() >= 5:
+        if count_face_encodings(emp) >= 5:
             return jsonify({'success': False, 'message': 'Employee already has 5 face images'}), 400
 
         # Read image bytes
@@ -101,14 +102,14 @@ def add_employee_face(employee_id):
 
         db_path = os.path.join('static', 'face_images', final_name)
 
-        added = emp.add_face_encoding(query_vec, image_path=db_path)
+        added = add_face_encoding(emp, query_vec, image_path=db_path)
         if not added:
             return jsonify({'success': False, 'message': 'Could not add encoding (limit reached)'}), 400
 
         db.session.add(emp)
         db.session.commit()
 
-        return jsonify({'success': True, 'message': 'Image added', 'image_path': db_path, 'count': emp.count_face_encodings()}), 200
+        return jsonify({'success': True, 'message': 'Image added', 'image_path': db_path, 'count': count_face_encodings(emp)}), 200
 
     except Exception as e:
         db.session.rollback()
