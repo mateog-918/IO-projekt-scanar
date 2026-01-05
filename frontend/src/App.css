@@ -1,0 +1,268 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Zapobiega niechcianemu przewijaniu całego okna */
+}
+
+/* Główne kontenery */
+.app-container {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  width: 100%;/* Sidebar i główna treść */
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+.app-container.no-sidebar {
+  grid-template-columns: 1fr; /* Tylko jedna kolumna na całą szerokość */
+}
+
+/* Header z logo */
+.app-header {
+  background-color: #fcfcfc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid #ddd;
+  height: 100px;
+}
+
+.logo {
+  height: 90%; /* Dopasuj do swojego logo */
+}
+
+/* Panel boczny (Sidebar) */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: white;
+  border-right: 2px solid #ddd;
+  gap: 20px;
+  padding: 20px;
+
+
+}
+
+.nav-item {
+  margin: 5px 5px;
+  cursor: pointer;
+  font-size: 20px;
+  justify-content: space-between;
+  color: #000000;
+}
+
+.nav-item.active {
+  font-weight: bold;
+}
+
+/* Główny obszar formularza */
+.main-content {
+  background: linear-gradient(180deg, #FFE4B9 0%, #ffffff 100%);
+  padding: 60px;
+}
+
+.input-group-row{
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-width: 300px;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 20%;
+}
+
+/* Stylizacja pól wejściowych */
+.input-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-field label {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.input-field input {
+  height: 45px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0 15px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.input-field input[type="file"] {
+    height: 45px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px 15px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+
+}
+
+.custom-select {
+  height: 47px; /* Nieco wyższy niż standardowy input dla lepszego wyglądu */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0 15px;
+  background-color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  appearance: none; /* Usuwa domyślny wygląd systemowy (opcjonalnie) */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 15px;
+}
+
+.custom-select:focus {
+  border-color: #00cae9;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 202, 233, 0.2);
+}
+
+
+/* Przycisk */
+.btn-main {
+  background-color: #00C7EF;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 6px 4px rgba(0,0,0,0.25);
+  margin-top: 30px;
+  transition: background-color 0.3s ease, box-shadow 0.1s ease;
+
+}
+
+.btn-main:hover {
+  background-color: #00b5d1;
+}
+
+.btn-main:active {
+  box-shadow: none;
+  border: none;
+}
+
+/* Weryfikacja */
+
+.verify-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.camera-viewport {
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden; /* Ważne, aby wideo nie wystawało poza zaokrąglenia */
+  position: relative;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+
+
+.placeholder-text {
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-style: italic;
+  opacity: 0.5;
+}
+
+.btn-large {
+  padding: 20px 80px;
+  font-size: 1.4rem;
+}
+
+.btn-disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+}
+
+/* Zawsze rezerwujemy miejsce na skaner */
+#reader {
+  width: 100%;
+  max-width: 500px;
+  background: black;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0 auto 20px auto;
+}
+
+/* Ukrywamy, ale nie usuwamy z DOM */
+.scanner-hidden {
+  display: none;
+}
+
+.scanner-active {
+  display: block;
+  border: 4px solid #00cae9;
+}
+
+.camera-viewport-placeholder {
+  width: 100%;
+  max-width: 500px;
+  height: 375px; /* Dopasuj do proporcji kamery */
+  background: #222;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #666;
+  margin: 0 auto 20px auto;
+  position: relative;
+}
+
+/* Wyświetlanie kodu QR */
+.qr-code-display {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.qr-canvas-wrapper {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px dashed #00cae9;
+    min-height: 240px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-result {
+    text-align: center;
+}
+
+.qr-placeholder {
+    color: #aaa;
+    font-style: italic;
+    text-align: center;
+}
