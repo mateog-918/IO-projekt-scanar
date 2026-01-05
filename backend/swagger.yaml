@@ -294,9 +294,17 @@ paths:
       tags:
         - "Employees"
       summary: "Pobierz listę pracowników"
-      description: "Zwraca wszystkich aktywnych pracowników"
+      description: "Zwraca listę pracowników z opcjonalnym filtrem aktywności (domyślnie tylko aktywni)"
       produces:
         - "application/json"
+      parameters:
+        - in: "query"
+          name: "active"
+          type: "string"
+          required: false
+          description: "Filtr aktywności: 'true' (tylko aktywni - domyślnie), 'false' (tylko nieaktywni), 'all' (wszyscy)"
+          enum: ["true", "false", "all"]
+          default: "true"
       responses:
         200:
           description: "Lista pracowników"
@@ -305,6 +313,7 @@ paths:
             properties:
               success:
                 type: "boolean"
+                example: true
               employees:
                 type: "array"
                 items:
@@ -324,35 +333,6 @@ paths:
                       type: "boolean"
                     created_at:
                       type: "string"
-        500:
-          description: "Błąd serwera"
-
-  /manage_employees/{employee_id}:
-    get:
-      tags:
-        - "Employees"
-      summary: "Pobierz dane pracownika"
-      description: "Zwraca szczegóły pracownika po ID"
-      produces:
-        - "application/json"
-      parameters:
-        - in: "path"
-          name: "employee_id"
-          description: "ID pracownika"
-          required: true
-          type: "integer"
-      responses:
-        200:
-          description: "Dane pracownika"
-          schema:
-            type: "object"
-            properties:
-              success:
-                type: "boolean"
-              employee:
-                type: "object"
-        404:
-          description: "Nie znaleziono pracownika"
         500:
           description: "Błąd serwera"
 
@@ -401,6 +381,213 @@ paths:
           description: "Nie znaleziono pracownika"
         500:
           description: "Błąd serwera"
+
+  /manage_employees/{employee_id}:
+    get:
+      tags:
+        - "Employees"
+      summary: "Pobierz dane pracownika"
+      description: "Zwraca szczegóły pracownika po ID"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+      responses:
+        200:
+          description: "Pracownik znaleziony"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              employee:
+                type: "object"
+        404:
+          description: "Nie znaleziono pracownika"
+    
+    put:
+      tags:
+        - "Employees"
+      summary: "Edytuj dane pracownika"
+      description: "Aktualizuje dane pracownika (name, position, department)"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "Jan Nowak"
+              position:
+                type: "string"
+                example: "Senior Engineer"
+              department:
+                type: "string"
+                example: "IT"
+      responses:
+        200:
+          description: "Dane zaktualizowane"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Dane pracownika zaktualizowane"
+              employee:
+                type: "object"
+        400:
+          description: "Brak danych do aktualizacji"
+        404:
+          description: "Nie znaleziono pracownika"
+    
+    delete:
+      tags:
+        - "Employees"
+      summary: "Usuń pracownika z bazy (hard delete)"
+      description: "UWAGA: Całkowite usunięcie pracownika, plików i historii. Nieodwracalne! Wymaga parametru confirm=true"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+        - in: "query"
+          name: "confirm"
+          required: true
+          type: "string"
+          description: "Potwierdzenie (musi być 'true')"
+          enum: ["true"]
+      responses:
+        200:
+          description: "Pracownik usunięty"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Pracownik Jan Kowalski został całkowicie usunięty"
+        400:
+          description: "Brak potwierdzenia (confirm=true)"
+        404:
+          description: "Nie znaleziono pracownika"
+
+  /manage_employees/{employee_id}/deactivate:
+    put:
+      tags:
+        - "Employees"
+      summary: "Dezaktywuj pracownika (soft delete)"
+      description: "Ustawia is_active=false. Pracownik znika z list, ale dane pozostają w bazie"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+      responses:
+        200:
+          description: "Pracownik dezaktywowany"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Pracownik Jan Kowalski został dezaktywowany"
+              employee:
+                type: "object"
+        400:
+          description: "Pracownik jest już dezaktywowany"
+        404:
+          description: "Nie znaleziono pracownika"
+
+  /manage_employees/{employee_id}/activate:
+    put:
+      tags:
+        - "Employees"
+      summary: "Reaktywuj pracownika"
+      description: "Ustawia is_active=true. Przywraca pracownika do listy aktywnych"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+      responses:
+        200:
+          description: "Pracownik reaktywowany"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Pracownik Jan Kowalski został reaktywowany"
+              employee:
+                type: "object"
+        400:
+          description: "Pracownik jest już aktywny"
+        404:
+          description: "Nie znaleziono pracownika"
+
+  /manage_employees/{employee_id}/faces/{face_index}:
+    delete:
+      tags:
+        - "Employees"
+      summary: "Usuń konkretną twarz pracownika"
+      description: "Usuwa encoding i plik zdjęcia dla wybranej twarzy (index 1-5)"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          required: true
+          type: "integer"
+          description: "ID pracownika"
+        - in: "path"
+          name: "face_index"
+          required: true
+          type: "integer"
+          description: "Numer twarzy (1-5)"
+          minimum: 1
+          maximum: 5
+      responses:
+        200:
+          description: "Twarz usunięta"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Twarz 1 została usunięta"
+              remaining_faces:
+                type: "integer"
+                example: 2
+                description: "Liczba pozostałych twarzy"
+        400:
+          description: "Nieprawidłowy indeks twarzy"
+        404:
+          description: "Nie znaleziono pracownika"
 
   /verification/employees/{employee_id}/match:
     post:
