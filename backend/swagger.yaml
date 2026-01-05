@@ -324,6 +324,46 @@ paths:
         500:
           description: "Błąd serwera"
 
+  /verification/save_qr:
+    post:
+      tags:
+        - "Verification"
+      summary: "Zapisz wygenerowany kod QR pracownika"
+      description: "Odbiera obraz kodu QR w formacie Base64 oraz nazwę pracownika. Dekoduje dane binarne i zapisuje je jako plik .png w dedykowanym folderze na serwerze. Jeśli plik o danej nazwie już istnieje, zostaje nadpisany."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          description: "Obiekt JSON zawierający dane obrazu i identyfikację pracownika"
+          schema:
+            type: "object"
+            properties:
+              image:
+                type: "string"
+                description: "Obraz w formacie Base64 (ciąg znaków zaczynający się od 'data:image/png;base64,')"
+                example: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
+              name:
+                type: "string"
+                description: "Pełne imię i nazwisko pracownika (wykorzystywane jako nazwa pliku)"
+                example: "Jan Kowalski"
+      responses:
+        200:
+          description: "Pomyślnie zapisano plik na serwerze"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Saved to ./QRcode/Jan Kowalski.png"
+        400:
+          description: "Błąd walidacji - brak pola 'image' lub 'name' w żądaniu"
+        500:
+          description: "Wewnętrzny błąd serwera (np. błąd dekodowania Base64 lub brak uprawnień do zapisu pliku)"
+
 definitions:
   Employee:
     type: "object"

@@ -1,14 +1,25 @@
 """"
 Blueprints for verification-related API endpoints.
 """
+import base64
+import os
 
 from flask import Blueprint, request, jsonify
+from flask import Flask
+from flask_cors import CORS
 from app.services.qr_service import QRService
 from app.services.face_recog import matches_face_image
 from app.models.employee import Employee
 
 
 verification_bp = Blueprint('verification', __name__)
+
+# Ścieżka do folderu zapisu
+QR_FOLDER = './QRcode'
+
+# Tworzymy folder, jeśli nie istnieje
+if not os.path.exists(QR_FOLDER):
+    os.makedirs(QR_FOLDER)
 
 @verification_bp.route('/qr', methods=['POST'])
 def verify_qr():
@@ -75,3 +86,31 @@ def match_employee_face(employee_id):
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@verification_bp.route('/save_qr', methods=['POST'])
+def save_qr():
+    data = request.get_json()
+    image_data = data.get('image') # Base64 string
+    employee_name = data.get('name')
+
+    if not image_data or not employee_name:
+        return jsonify({"error": "Missing data"}), 400
+
+    try:
+        # Usuwamy nagłówek "data:image/png;base64," z ciągu Base64
+        header, encoded = image_data.split(",", 1)
+        binary_data = base64.b64decode(encoded)
+
+        # Tworzymy ścieżkę pliku (np. ./QRcode/Jan Kowalski.png)
+        # Używamy .replace, aby usunąć znaki, których system operacyjny nie lubi w nazwach plików
+        clean_name = "".join([c for c in employee_name if c.isalnum() or c in (' ', '-', '_')]).strip()
+        file_path = os.path.join(QR_FOLDER, f"{clean_name}.png")
+
+        # Zapisujemy plik (wb = write binary). To automatycznie nadpisze istniejący plik.
+        with open(file_path, 'wb') as f:
+            f.write(binary_data)
+
+        return jsonify({"message": f"Saved to {file_path}"}), 200
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": str(e)}), 500
