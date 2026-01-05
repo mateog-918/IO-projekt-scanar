@@ -151,7 +151,7 @@ def get_employee(employee_id):
     """
     try:
         employee = Employee.query.get(employee_id)
-        if not employee or not employee.is_active:
+        if not employee:
             return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
         
         return jsonify({'success': True, 'employee': employee.to_dict()}), 200
