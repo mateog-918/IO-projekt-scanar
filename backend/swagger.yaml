@@ -12,12 +12,127 @@ schemes:
   - "http"
 
 tags:
+  - name: "Authentication"
+    description: "Autentykacja i autoryzacja admina"
   - name: "Verification"
     description: "Endpointy weryfikacji dostępu"
   - name: "Employees"
     description: "Zarządzanie pracownikami"
 
 paths:
+  /auth/login:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Logowanie admina"
+      description: "Logowanie do panelu administracyjnego. Credentials: admin/admin123"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Dane logowania"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - username
+              - password
+            properties:
+              username:
+                type: "string"
+                example: "admin"
+                description: "Nazwa użytkownika (domyślnie: admin)"
+              password:
+                type: "string"
+                example: "admin123"
+                description: "Hasło (domyślnie: admin123)"
+      responses:
+        200:
+          description: "Logowanie udane"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Login successful"
+              user:
+                type: "object"
+                properties:
+                  username:
+                    type: "string"
+                    example: "admin"
+        400:
+          description: "Brak danych"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Username and password are required"
+        401:
+          description: "Nieprawidłowe dane logowania"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Invalid credentials"
+  
+  /auth/logout:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Wylogowanie admina"
+      description: "Wylogowanie z panelu administracyjnego (czyści sesję)"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Wylogowanie udane"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "Logged out successfully"
+  
+  /auth/status:
+    get:
+      tags:
+        - "Authentication"
+      summary: "Sprawdzenie statusu logowania"
+      description: "Sprawdza czy użytkownik jest zalogowany"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Status sesji"
+          schema:
+            type: "object"
+            properties:
+              logged_in:
+                type: "boolean"
+                example: true
+              username:
+                type: "string"
+                example: "admin"
+                description: "Tylko gdy logged_in = true"
+
   /verification/qr:
     post:
       tags:
