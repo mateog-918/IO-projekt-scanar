@@ -1,106 +1,185 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from "html5-qrcode";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { Html5QrcodeScannerState } from "html5-qrcode";
 
 const VerifyFace = () => {
-  const [isScanning, setIsScanning] = useState(false);
-  const scannerRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const employeeId = location.state?.employeeId;
 
-  // 1. Sprzątanie przy wychodzeniu z podstrony
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const scannerRef = useRef(null);
+  const isInitializing = useRef(false); // BEZPIECZNIK
+
   useEffect(() => {
-    return () => {
-      stopScanner();
-    };
-  }, []);
+  if (!employeeId) {
+    Swal.fire('Błąd', 'Brak identyfikatora.', 'error').then(() => navigate('/'));
+    return;
+  }
 
-  const stopScanner = async () => {
-    if (scannerRef.current && scannerRef.current.isScanning) {
-      try {
-        await scannerRef.current.stop();
-        scannerRef.current = null;
-      } catch (err) {
-        console.warn("Error stopping:", err);
-      }
+  // Używamy zmiennej lokalnej do śledzenia czy komponent jest zamontowany
+  let isMounted = true;
+
+  const init = async () => {
+    if (isMounted) {
+      await startCamera();
     }
   };
 
-  const startScanning = async () => {
-    // Zapobiegamy wielokrotnemu uruchomieniu
-    if (isScanning) return;
+  init();
+
+  return () => {
+    isMounted = false; // Zabezpieczenie przed wywołaniem startu po odmontowaniu
+    stopCamera();
+  };
+}, [employeeId]);
+
+  const startCamera = async () => {
+    // Sprawdzamy czy już nie skanujemy lub nie inicjalizujemy
+    if (isInitializing.current || scannerRef.current?.isScanning) return;
+
+    isInitializing.current = true;
+
+    // Czyścimy kontener przed startem (na wszelki wypadek)
+    const container = document.getElementById("reader");
+    if (container) container.innerHTML = "";
 
     const html5QrCode = new Html5Qrcode("reader");
     scannerRef.current = html5QrCode;
-    setIsScanning(true);
-
-    const config = { fps: 10, qrbox: { width: 300, height: 300 } };
 
     try {
       await html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        (decodedText) => {
-          handleSuccess(decodedText);
-        }
+        { facingMode: "user" },
+        { fps: 20, qrbox: { width: 300, height: 300 }},
+        () => {} // Ignorujemy skanowanie kodów, bo chcemy tylko podgląd
       );
+      setIsCameraActive(true);
     } catch (err) {
-      console.error("Camera error:", err);
-      setIsScanning(false);
-      Swal.fire('Error', 'No camera access', 'error');
+      console.error("Błąd kamery:", err);
+    } finally {
+      isInitializing.current = false;
     }
   };
 
-  const handleSuccess = async (result) => {
-    await stopScanner();
-    setIsScanning(false);
-
-    // Przykładowy warunek poprawności kodu
-    if (result === "ADMIN-SCANAR-2026") {
-      Swal.fire({
-        icon: 'success',
-        title: 'Verified!',
-        text: 'Your face match was successful.',
-        timer: 1500,
-        showConfirmButton: false
-      }).then(() => {
-        navigate('/');
-      });
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Your face could not be verified',
-        text: 'Try again!',
-      }).then(() => {
-        navigate('/');
-      });
+  const stopCamera = async () => {
+  if (scannerRef.current) {
+    try {
+      // Sprawdzamy stan skanera przed próbą zatrzymania
+      // Stan 2 oznacza SCANNING (uruchomiony)
+      if (scannerRef.current.getState() === 2) {
+        await scannerRef.current.stop();
+      }
+    } catch (err) {
+      // Ignorujemy błąd "Cannot stop", bo oznacza on, że kamera i tak nie działa
+      if (!err.includes("not running")) {
+        console.warn("Błąd podczas zatrzymywania kamery:", err);
+      }
+    } finally {
+      // Zawsze czyścimy referencje i DOM
+      const container = document.getElementById("reader");
+      if (container) container.innerHTML = "";
+      scannerRef.current = null;
+      setIsCameraActive(false);
     }
+  }
+};
+
+  const handleCaptureAndVerify = async () => {
+    if (isProcessing || !isCameraActive) return;
+
+    const video = document.querySelector('#reader video');
+    if (!video) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+
+    setIsProcessing(true);
+    await stopCamera();
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) {
+        setIsProcessing(false);
+        startCamera();
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('employee_id', employeeId);
+      formData.append('image', blob, 'face_capture.jpg');
+
+      try {
+        const response = await fetch(`http://localhost:5000/api/verification/employees/${employeeId}/match`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Sprawdzamy czy odpowiedź jest poprawnym formatem JSON
+        const result = await response.json();
+
+        if (response.ok && result.match === true) {
+          // SCENARIUSZ: Sukces - twarze pasują
+          Swal.fire({
+            icon: 'success',
+            title: 'Zweryfikowano',
+            text: 'Tożsamość potwierdzona poprawnie.',
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => navigate('/'));
+
+        } else if (result.match === false) {
+          // SCENARIUSZ: Brak dopasowania (match: false)
+          throw new Error('Twarz nie pasuje do wzorca w bazie danych.');
+
+        } else {
+          // SCENARIUSZ: Błąd po stronie serwera (np. 400, 500) lub brak pola match
+          throw new Error(result.error || 'Wystąpił problem z weryfikacją po stronie serwera.');
+        }
+
+      } catch (err) {
+        // SCENARIUSZ: Błędy sieciowe lub rzucone wyjątki powyżej
+        Swal.fire({
+          icon: 'error',
+          title: 'Odmowa dostępu',
+          text: err.message || 'Nie udało się połączyć z serwerem.',
+          confirmButtonText: 'Spróbuj ponownie'
+        }).then(() => {
+          stopCamera();
+          navigate('/');// Restart kamery, aby użytkownik mógł spróbować jeszcze raz
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+    }, 'image/jpeg', 0.9);
   };
 
   return (
     <div className="verify-container">
-      {/* KLUCZ: Kontener 'reader' musi być stale obecny w DOM.
-        Zmieniamy tylko widoczność za pomocą opacity lub klasy.
-      */}
-      <div
-        id="reader"
-        className={isScanning ? "scanner-active" : "scanner-hidden"}
-      ></div>
+        <div
+          id="reader"
+          className={isCameraActive ? "scanner-active" : "scanner-hidden"}
+          style={{ width: '100%', maxWidth: '500px' }} // Dodatkowe zabezpieczenie szerokości
+        ></div>
 
-      {!isScanning && (
-        <div className="camera-viewport-placeholder">
-          <div className="scan-corners"></div>
-          <p>Camera is off</p>
-        </div>
-      )}
+        {isProcessing && (
+          <div className="processing-overlay">
+            <p>Weryfikacja...</p>
+          </div>
+        )}
 
       <div className="controls">
         <button
           className="btn-main btn-large"
-          onClick={startScanning}
-          disabled={isScanning}
+          onClick={handleCaptureAndVerify}
+          disabled={!isCameraActive || isProcessing}
         >
-          {isScanning ? "Scanning..." : "Verify your Face"}
+          {isProcessing ? "Czekaj..." : "Potwierdź Tożsamość"}
         </button>
       </div>
     </div>

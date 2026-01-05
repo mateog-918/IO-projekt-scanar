@@ -203,15 +203,6 @@ html, body, #root {
   cursor: not-allowed;
 }
 
-/* Zawsze rezerwujemy miejsce na skaner */
-#reader {
-  width: 100%;
-  max-width: 500px;
-  background: black;
-  border-radius: 20px;
-  overflow: hidden;
-  margin: 0 auto 20px auto;
-}
 
 /* Ukrywamy, ale nie usuwamy z DOM */
 .scanner-hidden {
@@ -265,4 +256,96 @@ html, body, #root {
     color: #aaa;
     font-style: italic;
     text-align: center;
+}
+
+/* Podgląd zdjęcia twarzy */
+
+.image-preview-wrapper {
+  width: 100%;
+  max-width: 300px;
+  height: 300px;
+  border: 2px dashed #00cae9;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: #f9f9f9;
+}
+
+.face-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Zdjęcie wypełni kontener bez deformacji */
+}
+
+.preview-placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+#reader {
+  width: 100%;
+  max-width: 500px;
+  max-height: 369px;
+  background: #000;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 0 auto 20px auto;
+  position: relative;
+}
+
+#reader video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
+}
+
+.scanner-hidden {
+  visibility: hidden;
+  height: 0;
+}
+
+.scanner-active {
+  display: block !important;
+  visibility: visible;
+  border: 4px solid #00cae9;
+}
+
+.camera-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.processing-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  z-index: 100;
+  border-radius: 20px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #00cae9;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

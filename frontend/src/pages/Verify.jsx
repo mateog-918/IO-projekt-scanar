@@ -8,7 +8,6 @@ const Verify = () => {
   const scannerRef = useRef(null);
   const navigate = useNavigate();
 
-  // 1. Sprzątanie przy wychodzeniu z podstrony
   useEffect(() => {
     return () => {
       stopScanner();
@@ -21,13 +20,12 @@ const Verify = () => {
         await scannerRef.current.stop();
         scannerRef.current = null;
       } catch (err) {
-        console.warn("Error stopping:", err);
+        console.warn("Error stopping scanner:", err);
       }
     }
   };
 
   const startScanning = async () => {
-    // Zapobiegamy wielokrotnemu uruchomieniu
     if (isScanning) return;
 
     const html5QrCode = new Html5Qrcode("reader");
@@ -47,39 +45,64 @@ const Verify = () => {
     } catch (err) {
       console.error("Camera error:", err);
       setIsScanning(false);
-      Swal.fire('Error', 'No camera access', 'error');
+      Swal.fire('Błąd', 'Brak dostępu do kamery', 'error');
     }
   };
 
+  // --- NOWA LOGIKA WERYFIKACJI PRZEZ API ---
   const handleSuccess = async (result) => {
     await stopScanner();
     setIsScanning(false);
 
-    // Przykładowy warunek poprawności kodu
-    if (result === "ADMIN-SCANAR-2026") {
-      Swal.fire({
-        icon: 'success',
-        title: 'Verified!',
-        text: 'QR Code is valid. Time to verify your face.',
-        timer: 1500,
-        showConfirmButton: false
-      }).then(() => {
-        navigate('/add-face');
+    try {
+      const response = await fetch('http://localhost:5000/api/verification/qr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ qr_data: result }),
       });
-    } else {
+
+      const data = await response.json();
+
+      if (response.status === 200 && data.success) {
+        // SUKCES: 200 OK
+        Swal.fire({
+          icon: 'success',
+          title: 'QR zweryfikowany!',
+          text: data.message, // "Witaj, Jan Kowalski"
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          // Przekazujemy ID pracownika do widoku skanowania twarzy
+          navigate('/verify-face', { state: { employeeId: data.employee.id } });
+        });
+
+      } else if (response.status === 400 || response.status === 404) {
+        // BŁĄD: 400 (Brak danych) lub 404 (Nie znaleziono)
+        Swal.fire({
+          icon: 'error',
+          title: 'Weryfikacja nieudana',
+          text: data.message,
+        });
+
+      } else {
+        // Inne błędy (np. 500)
+        throw new Error('Błąd serwera');
+      }
+
+    } catch (error) {
+      console.error("Verification error:", error);
       Swal.fire({
         icon: 'error',
-        title: 'Unknown QR Code',
-        text: 'Try again with a valid code.',
+        title: 'Błąd połączenia',
+        text: 'Nie można skontaktować się z systemem weryfikacji.',
       });
     }
   };
 
   return (
     <div className="verify-container">
-      {/* KLUCZ: Kontener 'reader' musi być stale obecny w DOM.
-        Zmieniamy tylko widoczność za pomocą opacity lub klasy.
-      */}
       <div
         id="reader"
         className={isScanning ? "scanner-active" : "scanner-hidden"}
