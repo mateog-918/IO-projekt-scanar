@@ -42,6 +42,7 @@ class Employee(db.Model):
             'id': self.id,
             'name': self.name,
             'position': self.position,
+            'department': self.department,
             'qr_code_hash': self.qr_code_hash,
             'is_active': self.is_active,
             'created_at': self.created_at.isoformat(),

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Html5Qrcode } from "html5-qrcode";
 import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { Html5QrcodeScannerState } from "html5-qrcode";
 
 const VerifyFace = () => {
   const navigate = useNavigate();
@@ -16,7 +15,13 @@ const VerifyFace = () => {
   const isInitializing = useRef(false); // BEZPIECZNIK
 
   useEffect(() => {
-  if (!employeeId) {
+  const savedLockout = localStorage.getItem('lockoutUntil');
+    if (savedLockout && parseInt(savedLockout) > Date.now()) {
+      navigate('/'); // Przekieruj do licznika czasu
+      return;
+    }
+
+    if (!employeeId) {
     Swal.fire('Błąd', 'Brak identyfikatora.', 'error').then(() => navigate('/'));
     return;
   }
@@ -124,6 +129,8 @@ const VerifyFace = () => {
         const result = await response.json();
 
         if (response.ok && result.match === true) {
+          localStorage.setItem('failedAttempts', '0');
+          localStorage.removeItem('lockoutUntil');
           // SCENARIUSZ: Sukces - twarze pasują
           Swal.fire({
             icon: 'success',
@@ -135,11 +142,11 @@ const VerifyFace = () => {
 
         } else if (result.match === false) {
           // SCENARIUSZ: Brak dopasowania (match: false)
-          throw new Error('Twarz nie pasuje do wzorca w bazie danych.');
-
+          const errorMsg = result.match === false ? 'Twarz nie pasuje.' : (result.error || 'Błąd serwera');
+          handleFailure(errorMsg);
         } else {
           // SCENARIUSZ: Błąd po stronie serwera (np. 400, 500) lub brak pola match
-          throw new Error(result.error || 'Wystąpił problem z weryfikacją po stronie serwera.');
+          handleFailure('Błąd połączenia z serwerem');
         }
 
       } catch (err) {
@@ -157,6 +164,26 @@ const VerifyFace = () => {
         setIsProcessing(false);
       }
     }, 'image/jpeg', 0.9);
+  };
+
+  const handleFailure = (msg) => {
+    const currentAttempts = parseInt(localStorage.getItem('failedAttempts')) || 0;
+    const newAttempts = currentAttempts + 1;
+    localStorage.setItem('failedAttempts', newAttempts.toString());
+
+    if (newAttempts >= 5) {
+      const unlockTime = Date.now() + 120000;
+      localStorage.setItem('lockoutUntil', unlockTime.toString());
+      Swal.fire('Zablokowano', 'Zbyt wiele prób (QR + Twarz). Czekaj 2 minuty.', 'error')
+        .then(() => navigate('/'));
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Odmowa',
+        text: `${msg} Pozostało prób: ${5 - newAttempts}`,
+        confirmButtonText: 'Spróbuj ponownie'
+      }).then(() => navigate('/'));
+    }
   };
 
   return (

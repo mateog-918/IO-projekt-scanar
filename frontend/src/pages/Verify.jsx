@@ -7,9 +7,39 @@ const Verify = () => {
   const [isScanning, setIsScanning] = useState(false);
   const scannerRef = useRef(null);
   const navigate = useNavigate();
+  const [failedAttempts, setFailedAttempts] = useState(() => {
+    return parseInt(localStorage.getItem('failedAttempts')) || 0;
+  });
+  const [lockoutUntil, setLockoutUntil] = useState(() => {
+    const saved = localStorage.getItem('lockoutUntil');
+    return saved ? parseInt(saved) : null;
+  });
+  const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
+    const checkLockout = () => {
+      const now = Date.now();
+      const savedLockout = localStorage.getItem('lockoutUntil');
+
+      if (savedLockout) {
+        const lockoutTime = parseInt(savedLockout);
+        if (lockoutTime > now) {
+          setLockoutUntil(lockoutTime);
+          setTimeLeft(Math.ceil((lockoutTime - now) / 1000));
+        } else {
+          // Blokada minęła
+          setLockoutUntil(null);
+          setFailedAttempts(0);
+          localStorage.removeItem('lockoutUntil');
+          localStorage.setItem('failedAttempts', '0');
+        }
+      }
+    };
+
+    checkLockout();
+    const timer = setInterval(checkLockout, 1000);
     return () => {
+      clearInterval(timer);
       stopScanner();
     };
   }, []);
@@ -26,6 +56,10 @@ const Verify = () => {
   };
 
   const startScanning = async () => {
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+      Swal.fire('Blokada', `Zbyt wiele prób. Spróbuj za ${timeLeft}s.`, 'warning');
+      return;
+    }
     if (isScanning) return;
 
     const html5QrCode = new Html5Qrcode("reader");
@@ -85,6 +119,7 @@ const Verify = () => {
           title: 'Weryfikacja nieudana',
           text: data.message,
         });
+        handleFailure(data.message || 'Nieprawidłowy kod');
 
       } else {
         // Inne błędy (np. 500)
@@ -101,6 +136,21 @@ const Verify = () => {
     }
   };
 
+  const handleFailure = (msg) => {
+    const newAttempts = (parseInt(localStorage.getItem('failedAttempts')) || 0) + 1;
+    setFailedAttempts(newAttempts);
+    localStorage.setItem('failedAttempts', newAttempts.toString());
+
+    if (newAttempts >= 5) {
+      const unlockTime = Date.now() + 120000;
+      setLockoutUntil(unlockTime);
+      localStorage.setItem('lockoutUntil', unlockTime.toString());
+      Swal.fire('Zablokowano', 'Przekroczono limit prób. Czekaj 2 minuty.', 'error');
+    } else {
+      Swal.fire('Błąd', `${msg}. Pozostało prób: ${5 - newAttempts}`, 'warning');
+    }
+  };
+
   return (
     <div className="verify-container">
       <div
@@ -111,7 +161,7 @@ const Verify = () => {
       {!isScanning && (
         <div className="camera-viewport-placeholder">
           <div className="scan-corners"></div>
-          <p>Camera is off</p>
+          {lockoutUntil ? <p style={{color: 'red'}}>Blokada: {timeLeft}s</p> : <p>Gotowy do skanowania</p>}
         </div>
       )}
 
@@ -119,9 +169,9 @@ const Verify = () => {
         <button
           className="btn-main btn-large"
           onClick={startScanning}
-          disabled={isScanning}
+          disabled={isScanning || lockoutUntil !== null}
         >
-          {isScanning ? "Scanning..." : "Verify QR"}
+         {lockoutUntil ? `Zablokowane (${timeLeft}s)` : (isScanning ? "Skanowanie..." : "Skanuj QR")}
         </button>
       </div>
     </div>
