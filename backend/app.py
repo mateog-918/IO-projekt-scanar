@@ -10,6 +10,9 @@ def create_app():
     app = Flask(__name__)
     Swagger(app)
 
+    # Secret key for session management
+    app.config['SECRET_KEY'] = 'your-secret-key-change-in-production-12345'
+    
     #Konfiguracja bazy danych - używamy ścieżki bezwzględnej do folderu instance
     instance_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'instance')
     os.makedirs(instance_path, exist_ok=True)  # Tworzymy folder instance jeśli nie istnieje
@@ -53,6 +56,9 @@ def create_app():
         return response
     
     #Register blueprints
+    from app.api.auth import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
+    
     from app.api.verification import verification_bp
     app.register_blueprint(verification_bp, url_prefix='/api/verification')
 
