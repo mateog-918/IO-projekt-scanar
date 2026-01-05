@@ -120,10 +120,19 @@ def add_employee_face(employee_id):
 def get_employees():
     """
     Pobierz listę wszystkich pracowników
+    Parametr opcjonalny: ?active=true/false/all (domyślnie: true)
     """
-
     try:
-        employees = Employee.query.filter_by(is_active=True).all()
+        # Get optional filter parameter
+        active_filter = request.args.get('active', 'true').lower()
+        
+        if active_filter == 'true':
+            employees = Employee.query.filter_by(is_active=True).all()
+        elif active_filter == 'false':
+            employees = Employee.query.filter_by(is_active=False).all()
+        else:  # 'all' or any other value
+            employees = Employee.query.all()
+        
         return jsonify({
             'success': True,
             'employees': [emp.to_dict() for emp in employees]

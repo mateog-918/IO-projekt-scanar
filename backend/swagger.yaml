@@ -294,9 +294,17 @@ paths:
       tags:
         - "Employees"
       summary: "Pobierz listę pracowników"
-      description: "Zwraca wszystkich aktywnych pracowników"
+      description: "Zwraca listę pracowników z opcjonalnym filtrem aktywności (domyślnie tylko aktywni)"
       produces:
         - "application/json"
+      parameters:
+        - in: "query"
+          name: "active"
+          type: "string"
+          required: false
+          description: "Filtr aktywności: 'true' (tylko aktywni - domyślnie), 'false' (tylko nieaktywni), 'all' (wszyscy)"
+          enum: ["true", "false", "all"]
+          default: "true"
       responses:
         200:
           description: "Lista pracowników"
@@ -305,6 +313,7 @@ paths:
             properties:
               success:
                 type: "boolean"
+                example: true
               employees:
                 type: "array"
                 items:
