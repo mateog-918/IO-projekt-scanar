@@ -154,6 +154,206 @@ def get_employee(employee_id):
         }), 500
 
 
+@employees_bp.route('/<int:employee_id>', methods=['PUT'])
+def update_employee(employee_id):
+    """
+    Edytuj dane pracownika (name, position, department)
+    """
+    try:
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
+        
+        data = request.get_json()
+        if not data:
+            return jsonify({'success': False, 'message': 'Brak danych do aktualizacji'}), 400
+        
+        # Update allowed fields
+        if 'name' in data:
+            employee.name = data['name']
+        if 'position' in data:
+            employee.position = data['position']
+        if 'department' in data:
+            employee.department = data['department']
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Dane pracownika zaktualizowane',
+            'employee': employee.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Błąd serwera: {str(e)}'
+        }), 500
+
+
+@employees_bp.route('/<int:employee_id>/deactivate', methods=['PUT'])
+def deactivate_employee(employee_id):
+    """
+    Dezaktywuj pracownika (soft delete)
+    """
+    try:
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
+        
+        if not employee.is_active:
+            return jsonify({'success': False, 'message': 'Pracownik jest już dezaktywowany'}), 400
+        
+        employee.is_active = False
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Pracownik {employee.name} został dezaktywowany',
+            'employee': employee.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Błąd serwera: {str(e)}'
+        }), 500
+
+
+@employees_bp.route('/<int:employee_id>/activate', methods=['PUT'])
+def activate_employee(employee_id):
+    """
+    Reaktywuj pracownika
+    """
+    try:
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
+        
+        if employee.is_active:
+            return jsonify({'success': False, 'message': 'Pracownik jest już aktywny'}), 400
+        
+        employee.is_active = True
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Pracownik {employee.name} został reaktywowany',
+            'employee': employee.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Błąd serwera: {str(e)}'
+        }), 500
+
+
+@employees_bp.route('/<int:employee_id>/faces/<int:face_index>', methods=['DELETE'])
+def delete_employee_face(employee_id, face_index):
+    """
+    Usuń konkretną twarz pracownika (index 1-5)
+    """
+    try:
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
+        
+        if face_index < 1 or face_index > 5:
+            return jsonify({'success': False, 'message': 'Nieprawidłowy indeks twarzy (1-5)'}), 400
+        
+        # Get image path before deleting
+        image_path_attr = f'face_image_path_{face_index}'
+        image_path = getattr(employee, image_path_attr)
+        
+        # Delete from database
+        setattr(employee, f'face_encoding_{face_index}', None)
+        setattr(employee, image_path_attr, None)
+        
+        # Delete physical file if exists
+        if image_path:
+            full_path = os.path.join(current_app.root_path, image_path)
+            if os.path.exists(full_path):
+                try:
+                    os.remove(full_path)
+                except Exception as e:
+                    print(f"Warning: Could not delete file {full_path}: {e}")
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Twarz {face_index} została usunięta',
+            'remaining_faces': count_face_encodings(employee)
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Błąd serwera: {str(e)}'
+        }), 500
+
+
+@employees_bp.route('/<int:employee_id>', methods=['DELETE'])
+def delete_employee(employee_id):
+    """
+    Usuń pracownika całkowicie z bazy (hard delete)
+    Wymaga parametru confirm=true dla bezpieczeństwa
+    """
+    try:
+        # Security check - require confirmation
+        confirm = request.args.get('confirm', '').lower()
+        if confirm != 'true':
+            return jsonify({
+                'success': False,
+                'message': 'Wymagane potwierdzenie: dodaj parametr ?confirm=true'
+            }), 400
+        
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
+        
+        employee_name = employee.name
+        
+        # Delete all face image files
+        for i in range(1, 6):
+            image_path = getattr(employee, f'face_image_path_{i}')
+            if image_path:
+                full_path = os.path.join(current_app.root_path, image_path)
+                if os.path.exists(full_path):
+                    try:
+                        os.remove(full_path)
+                    except Exception as e:
+                        print(f"Warning: Could not delete file {full_path}: {e}")
+        
+        # Delete QR code file if exists
+        qr_path = os.path.join(current_app.root_path, 'static', 'qr_codes', f'{employee_id}.png')
+        if os.path.exists(qr_path):
+            try:
+                os.remove(qr_path)
+            except Exception as e:
+                print(f"Warning: Could not delete QR file {qr_path}: {e}")
+        
+        # Delete from database
+        db.session.delete(employee)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'Pracownik {employee_name} został całkowicie usunięty'
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Błąd serwera: {str(e)}'
+        }), 500
+
 
         
 
