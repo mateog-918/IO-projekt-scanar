@@ -17,7 +17,7 @@ employees_bp = Blueprint('manage_employees', __name__)
 @employees_bp.route('/', methods=['POST'])
 def add_employee():
     """
-    Dodaj nowego pracownika i wygeneruj QR kod
+    Dodaj nowego pracownika (bez automatycznego generowania QR kodu)
     """
     try:
         data = request.get_json()
@@ -25,25 +25,48 @@ def add_employee():
         if not data or 'name' not in data:
             return jsonify({'success': False, 'message': 'Brak danych pracownika'}), 400
         
-
         employee = Employee(
             name=data['name'],
             position=data.get('position', ''),
             department=data.get('department', ''),
-            qr_code_hash=''  # tymczasowo puste, zostanie zaktualizowane poniżej
+            qr_code_hash=''
         )
 
         db.session.add(employee)
-        db.session.flush()
-
-        #Generowanie QR kodu
-        qr_hash = QRService.generate_qr_code(employee.id)
-        employee.qr_code_hash = qr_hash
-
         db.session.commit()
 
-
         return jsonify({'success': True, 'employee': employee.to_dict()}), 201
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Błąd serwera: {str(e)}'
+        }), 500
+
+
+@employees_bp.route('/<int:employee_id>/qr', methods=['POST'])
+def generate_employee_qr(employee_id):
+    """
+    Wygeneruj QR kod dla pracownika
+    """
+    try:
+        employee = Employee.query.get(employee_id)
+        if not employee:
+            return jsonify({'success': False, 'message': 'Nie znaleziono pracownika'}), 404
+        
+        # Generowanie QR kodu
+        qr_hash = QRService.generate_qr_code(employee.id)
+        employee.qr_code_hash = qr_hash
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'QR kod wygenerowany',
+            'employee': employee.to_dict(),
+            'qr_code_hash': qr_hash
+        }), 200
 
     except Exception as e:
         db.session.rollback()

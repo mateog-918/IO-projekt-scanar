@@ -225,7 +225,7 @@ paths:
       tags:
         - "Employees"
       summary: "Dodaj nowego pracownika"
-      description: "Tworzy nowego pracownika i automatycznie generuje QR kod"
+      description: "Tworzy nowego pracownika bez QR kodu (QR kod można wygenerować osobno endpointem POST /manage_employees/{employee_id}/qr)"
       consumes:
         - "application/json"
       produces:
@@ -254,16 +254,13 @@ paths:
                 description: "Dział"
       responses:
         201:
-          description: "Pracownik utworzony"
+          description: "Pracownik utworzony (bez QR kodu)"
           schema:
             type: "object"
             properties:
               success:
                 type: "boolean"
                 example: true
-              message:
-                type: "string"
-                example: "Pracownik utworzony pomyślnie"
               employee:
                 type: "object"
                 properties:
@@ -277,14 +274,12 @@ paths:
                     type: "string"
                   qr_code_hash:
                     type: "string"
+                    example: ""
+                    description: "Pusty ciąg - QR kod nie został jeszcze wygenerowany"
                   is_active:
                     type: "boolean"
                   created_at:
                     type: "string"
-              qr_code:
-                type: "string"
-                example: "a1b2c3d4e5f6..."
-                description: "Wygenerowany hash QR kodu"
         400:
           description: "Błąd walidacji"
         500:
@@ -335,6 +330,76 @@ paths:
                       type: "string"
         500:
           description: "Błąd serwera"
+
+  /manage_employees/{employee_id}/qr:
+    post:
+      tags:
+        - "Employees"
+      summary: "Wygeneruj QR kod dla pracownika"
+      description: "Generuje unikalny QR kod dla pracownika i zapisuje go w bazie oraz jako plik PNG"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          description: "ID pracownika"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "QR kod wygenerowany"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              message:
+                type: "string"
+                example: "QR kod wygenerowany"
+              employee:
+                type: "object"
+                properties:
+                  id:
+                    type: "integer"
+                  name:
+                    type: "string"
+                  position:
+                    type: "string"
+                  department:
+                    type: "string"
+                  qr_code_hash:
+                    type: "string"
+                    example: "a1b2c3d4e5f6..."
+                  is_active:
+                    type: "boolean"
+                  created_at:
+                    type: "string"
+              qr_code_hash:
+                type: "string"
+                example: "a1b2c3d4e5f6..."
+                description: "Wygenerowany hash QR kodu"
+        404:
+          description: "Nie znaleziono pracownika"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
+                example: "Nie znaleziono pracownika"
+        500:
+          description: "Błąd serwera"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              message:
+                type: "string"
 
   /manage_employees/{employee_id}/faces:
     post:
