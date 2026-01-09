@@ -3,7 +3,7 @@ Logging service for handling event logging and retrieval
 """
 import os
 import base64
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models.event_log import EventLog, EventType
 from app.models.employee import db
 from werkzeug.utils import secure_filename
@@ -42,7 +42,8 @@ class LoggingService:
             os.makedirs(event_dir, exist_ok=True)
             
             # Generate filename with timestamp
-            timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S_%f')[:-3]
+            # use UTC timestamp for filenames
+            timestamp = datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S_%f')[:-3]
             filename = f"{event_type}_{employee_id}_{timestamp}.png" if employee_id else f"{event_type}_{timestamp}.png"
             filename = secure_filename(filename)
             
@@ -93,7 +94,7 @@ class LoggingService:
                 qr_code_hash=qr_code_hash,
                 image_path=image_path,
                 message=message,
-                timestamp=datetime.utcnow()
+                timestamp=datetime.now(timezone.utc)
             )
             
             db.session.add(event_log)

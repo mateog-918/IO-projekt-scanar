@@ -32,18 +32,38 @@ const GenerateQR = () => {
       return;
     }
 
-    const selectedEmployee = employees.find(emp => emp.name === formData.fullName);
+    try {
+      // Find employee ID by name
+      const selectedEmployee = employees.find(emp => emp.name === formData.fullName);
+      
+      if (!selectedEmployee) {
+        Swal.fire('Błąd', 'Nie znaleziono pracownika.', 'error');
+        return;
+      }
 
-    if (selectedEmployee && selectedEmployee.qr_code_hash) {
-      setQrValue(selectedEmployee.qr_code_hash);
+      // API call to generate a new hash for this employee
+      const response = await fetch(`http://localhost:5000/api/manage_employees/${selectedEmployee.id}/qr`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate hash');
+      }
+
+      const data = await response.json();
+      const newHash = data.qr_code_hash;
+
+      setQrValue(newHash);
 
       // Musimy poczekać chwilę, aż React wyrenderuje Canvas z nową wartością
       setTimeout(() => {
         saveQRToServer(formData.fullName);
       }, 500);
 
-    } else {
-      Swal.fire('Błąd', 'Brak skojarzonego kodu hash.', 'error');
+    } catch (error) {
+      console.error("Błąd generowania hasha:", error);
+      Swal.fire('Błąd', 'Nie udało się wygenerować kodu QR.', 'error');
     }
   };
 

@@ -5,6 +5,7 @@ import re
 import os
 from flask_sqlalchemy import SQLAlchemy
 from app.models.employee import db
+from app.models.event_log import EventLog  # Import EventLog model
 
 def create_app():
     app = Flask(__name__)

@@ -1,7 +1,7 @@
 """
 Event Log model for tracking verification events
 """
-from datetime import datetime
+from datetime import datetime, timezone
 from app.models.employee import db
 from enum import Enum
 
@@ -28,8 +28,10 @@ class EventLog(db.Model):
     image_path = db.Column(db.String(500), nullable=True)  # Path to the image from the camera (if taken)
     image_data = db.Column(db.LargeBinary, nullable=True)  # Binary image data (optional, for direct retrieval)
     message = db.Column(db.Text, nullable=True)  # Additional info about the event
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # Use timezone-aware UTC timestamps
+    # Use timezone-aware UTC timestamps and store timezone information in the DB column
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     # Relationship to employee (optional)
     employee = db.relationship('Employee', backref='events')
@@ -43,7 +45,8 @@ class EventLog(db.Model):
             'qr_code_hash': self.qr_code_hash,
             'image_path': self.image_path,
             'message': self.message,
-            'timestamp': self.timestamp.isoformat() if self.timestamp else None,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
+            # Ensure we serialize timezone-aware ISO strings. If datetime is naive, assume UTC.
+            'timestamp': (self.timestamp.replace(tzinfo=timezone.utc) if self.timestamp and self.timestamp.tzinfo is None else self.timestamp).astimezone(timezone.utc).isoformat() if self.timestamp else None,
+            'created_at': (self.created_at.replace(tzinfo=timezone.utc) if self.created_at and self.created_at.tzinfo is None else self.created_at).astimezone(timezone.utc).isoformat() if self.created_at else None,
             'employee_name': self.employee.name if self.employee else None
         }
