@@ -65,6 +65,9 @@ def create_app():
     from app.api.manage_employees import employees_bp
     app.register_blueprint(employees_bp, url_prefix='/api/manage_employees')
     
+    from app.api.logging import logging_bp
+    app.register_blueprint(logging_bp, url_prefix='/api/logs')
+    
     return app
 
 
