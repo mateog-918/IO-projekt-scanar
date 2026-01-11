@@ -18,6 +18,8 @@ tags:
     description: "Endpointy weryfikacji dostępu"
   - name: "Employees"
     description: "Zarządzanie pracownikami"
+  - name: "Logging"
+    description: "Rejestrowanie i pobieranie dziennika zdarzeń weryfikacji"
 
 paths:
   /auth/login:
@@ -731,6 +733,320 @@ paths:
         500:
           description: "Wewnętrzny błąd serwera (np. błąd dekodowania Base64 lub brak uprawnień do zapisu pliku)"
 
+  /logs/:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz wszystkie dzienniki zdarzeń"
+      description: "Zwraca listę wszystkich zarejestrowanych zdarzeń weryfikacji z opcjonalnym podziałem na strony"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+          description: "Liczba wyników na stronę"
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+          description: "Liczba wyników do pominięcia"
+      responses:
+        200:
+          description: "Lista dzienników zdarzeń"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              total:
+                type: "integer"
+                example: 150
+              limit:
+                type: "integer"
+                example: 100
+              offset:
+                type: "integer"
+                example: 0
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        500:
+          description: "Błąd serwera"
+
+  /logs/type/{event_type}:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz dzienniki przefiltrowane po typie zdarzenia"
+      description: "Zwraca zdarzenia określonego typu (INVALID_QR, FACE_MISMATCH, VERIFICATION_SUCCESS, QR_SCANNED, FACE_SCANNED)"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "event_type"
+          type: "string"
+          required: true
+          description: "Typ zdarzenia do filtrowania"
+          enum: ["INVALID_QR", "FACE_MISMATCH", "VERIFICATION_SUCCESS", "QR_SCANNED", "FACE_SCANNED"]
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+          description: "Liczba wyników na stronę"
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+          description: "Liczba wyników do pominięcia"
+      responses:
+        200:
+          description: "Zdarzenia filtrowane po typie"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              event_type:
+                type: "string"
+                example: "FACE_MISMATCH"
+              total:
+                type: "integer"
+                example: 8
+              limit:
+                type: "integer"
+              offset:
+                type: "integer"
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        500:
+          description: "Błąd serwera"
+
+  /logs/employee/{employee_id}:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz dzienniki dla konkretnego pracownika"
+      description: "Zwraca wszystkie zdarzenia weryfikacji dla wybranego pracownika"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          type: "integer"
+          required: true
+          description: "ID pracownika"
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+          description: "Liczba wyników na stronę"
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+          description: "Liczba wyników do pominięcia"
+      responses:
+        200:
+          description: "Zdarzenia dla pracownika"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              employee_id:
+                type: "integer"
+                example: 5
+              total:
+                type: "integer"
+                example: 45
+              limit:
+                type: "integer"
+              offset:
+                type: "integer"
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        500:
+          description: "Błąd serwera"
+
+  /logs/date-range:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz dzienniki z zakresu dat"
+      description: "Zwraca zdarzenia z okresu między start_date a end_date"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "start_date"
+          type: "string"
+          format: "date-time"
+          required: true
+          description: "Data początkowa (format ISO: 2024-01-15T00:00:00)"
+          example: "2024-01-15T00:00:00"
+        - in: "query"
+          name: "end_date"
+          type: "string"
+          format: "date-time"
+          required: true
+          description: "Data końcowa (format ISO: 2024-01-15T23:59:59)"
+          example: "2024-01-15T23:59:59"
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+          description: "Liczba wyników na stronę"
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+          description: "Liczba wyników do pominięcia"
+      responses:
+        200:
+          description: "Zdarzenia z zakresu dat"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              start_date:
+                type: "string"
+                example: "2024-01-15T00:00:00"
+              end_date:
+                type: "string"
+                example: "2024-01-15T23:59:59"
+              total:
+                type: "integer"
+                example: 35
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        400:
+          description: "Brak lub nieprawidłowy format daty"
+        500:
+          description: "Błąd serwera"
+
+  /logs/statistics:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz statystyki zdarzeń"
+      description: "Zwraca liczbę zdarzeń pogrupowaną po typach"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Statystyki zdarzeń"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              statistics:
+                type: "object"
+                properties:
+                  VERIFICATION_SUCCESS:
+                    type: "integer"
+                    example: 145
+                  FACE_MISMATCH:
+                    type: "integer"
+                    example: 8
+                  INVALID_QR:
+                    type: "integer"
+                    example: 12
+                  QR_SCANNED:
+                    type: "integer"
+                    example: 200
+                  FACE_SCANNED:
+                    type: "integer"
+                    example: 150
+                  total:
+                    type: "integer"
+                    example: 515
+        500:
+          description: "Błąd serwera"
+
+  /logs/event-types:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz dostępne typy zdarzeń"
+      description: "Zwraca listę wszystkich możliwych typów zdarzeń w systemie"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Lista typów zdarzeń"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              event_types:
+                type: "array"
+                items:
+                  type: "string"
+                  enum: ["INVALID_QR", "FACE_MISMATCH", "VERIFICATION_SUCCESS", "QR_SCANNED", "FACE_SCANNED"]
+                example: ["INVALID_QR", "FACE_MISMATCH", "VERIFICATION_SUCCESS", "QR_SCANNED", "FACE_SCANNED"]
+        500:
+          description: "Błąd serwera"
+
+  /logs/image/{log_id}:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz obraz powiązany ze zdarzeniem"
+      description: "Zwraca plik PNG powiązany z danym zdarzeniem w dzienniku"
+      produces:
+        - "image/png"
+      parameters:
+        - in: "path"
+          name: "log_id"
+          type: "integer"
+          required: true
+          description: "ID wpisu w dzienniku (event_logs.id)"
+      responses:
+        200:
+          description: "Obraz PNG"
+          schema:
+            type: "string"
+            format: "binary"
+        404:
+          description: "Wpis w dzienniku nie znaleziony lub brak powiązanego obrazu"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              error:
+                type: "string"
+                example: "No image associated with this log"
+        500:
+          description: "Błąd serwera"
+
 definitions:
   Employee:
     type: "object"
@@ -774,3 +1090,46 @@ definitions:
         type: "integer"
         description: "Liczba zapisanych wektorów twarzy (encodingów) dla pracownika"
         example: 2
+
+  EventLog:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        description: "Unikalne ID zdarzenia"
+        example: 101
+      event_type:
+        type: "string"
+        description: "Typ zdarzenia"
+        enum: ["INVALID_QR", "FACE_MISMATCH", "VERIFICATION_SUCCESS", "QR_SCANNED", "FACE_SCANNED"]
+        example: "VERIFICATION_SUCCESS"
+      employee_id:
+        type: "integer"
+        description: "ID pracownika (null dla zdarzeń INVALID_QR)"
+        example: 5
+      qr_code_hash:
+        type: "string"
+        description: "Hash QR kodu który był skanowany"
+        example: "a1b2c3d4e5f6..."
+      image_path:
+        type: "string"
+        description: "Ścieżka do zapisanego obrazu z kamery"
+        example: "static/logs/VERIFICATION_SUCCESS/VERIFICATION_SUCCESS_5_20240115_143040_001.png"
+      message:
+        type: "string"
+        description: "Dodatkowe informacje o zdarzeniu"
+        example: "Successful verification for employee Jan Kowalski"
+      timestamp:
+        type: "string"
+        format: "date-time"
+        description: "Kiedy zdarzenie miało miejsce"
+        example: "2024-01-15T14:30:40.789000"
+      created_at:
+        type: "string"
+        format: "date-time"
+        description: "Kiedy zdarzenie zostało zarejestrowane"
+        example: "2024-01-15T14:30:40.890000"
+      employee_name:
+        type: "string"
+        description: "Imię i nazwisko pracownika (null dla zdarzeń bez pracownika)"
+        example: "Jan Kowalski"
