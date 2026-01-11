@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from flask import request, make_response, send_from_directory
 from flasgger import Swagger
 import re
@@ -13,6 +13,11 @@ def create_app():
 
     # Secret key for session management
     app.config['SECRET_KEY'] = 'your-secret-key-change-in-production-12345'
+
+    # Session configuration for CORS
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config['SESSION_COOKIE_SECURE'] = False  # Ustaw True gdy będziesz używać HTTPS
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
     
     #Konfiguracja bazy danych - używamy ścieżki bezwzględnej do folderu instance
     instance_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'instance')
