@@ -17,7 +17,7 @@ from app.models.event_log import EventType
 verification_bp = Blueprint('verification', __name__)
 
 # Ścieżka do folderu zapisu
-QR_FOLDER = './QRcode'
+QR_FOLDER = './static/qr_codes'
 
 # Tworzymy folder, jeśli nie istnieje
 if not os.path.exists(QR_FOLDER):
@@ -148,6 +148,8 @@ def save_qr():
     data = request.get_json()
     image_data = data.get('image') # Base64 string
     employee_name = data.get('name')
+    employee_id = data.get('id')
+
 
     if not image_data or not employee_name:
         return jsonify({"error": "Missing data"}), 400
@@ -157,9 +159,9 @@ def save_qr():
         header, encoded = image_data.split(",", 1)
         binary_data = base64.b64decode(encoded)
 
-        # Tworzymy ścieżkę pliku (np. ./QRcode/Jan Kowalski.png)
+
         # Używamy .replace, aby usunąć znaki, których system operacyjny nie lubi w nazwach plików
-        clean_name = "".join([c for c in employee_name if c.isalnum() or c in (' ', '-', '_')]).strip()
+        clean_name = "".join([c for c in employee_name if c.isalnum() or c in (' ', '-', '_')]).strip() + f" {employee_id}"
         file_path = os.path.join(QR_FOLDER, f"{clean_name}.png")
 
         # Zapisujemy plik (wb = write binary). To automatycznie nadpisze istniejący plik.

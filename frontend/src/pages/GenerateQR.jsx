@@ -58,7 +58,7 @@ const GenerateQR = () => {
 
       // Musimy poczekać chwilę, aż React wyrenderuje Canvas z nową wartością
       setTimeout(() => {
-        saveQRToServer(formData.fullName);
+        saveQRToServer(formData.fullName, selectedEmployee.id);
       }, 500);
 
     } catch (error) {
@@ -67,7 +67,7 @@ const GenerateQR = () => {
     }
   };
 
-  const saveQRToServer = async (fileName) => {
+  const saveQRToServer = async (fileName, employeeID) => {
     const canvas = document.querySelector('canvas'); // Pobieramy canvas wygenerowany przez bibliotekę
     if (!canvas) return;
 
@@ -79,7 +79,8 @@ const GenerateQR = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           image: imageData,
-          name: fileName
+          name: fileName,
+          id: employeeID
         }),
       });
 

@@ -1,5 +1,6 @@
 from flask import Flask, app
 from flask import request, make_response, send_from_directory
+from flask_cors import CORS
 from flasgger import Swagger
 import re
 import os
@@ -15,10 +16,11 @@ def create_app():
     app.config['SECRET_KEY'] = 'your-secret-key-change-in-production-12345'
 
     # Session configuration for CORS
-    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
     app.config['SESSION_COOKIE_SECURE'] = False  # Ustaw True gdy będziesz używać HTTPS
     app.config['SESSION_COOKIE_HTTPONLY'] = True
-    
+    CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+
     #Konfiguracja bazy danych - używamy ścieżki bezwzględnej do folderu instance
     instance_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'instance')
     os.makedirs(instance_path, exist_ok=True)  # Tworzymy folder instance jeśli nie istnieje
