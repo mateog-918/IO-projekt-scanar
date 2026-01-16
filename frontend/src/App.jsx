@@ -8,6 +8,7 @@ import GenerateQR from './pages/GenerateQR.jsx';
 import AddFace from './pages/AddFace.jsx';
 import RemoveEmployee from './pages/RemoveEmployee.jsx';
 import Reports from './pages/Reports.jsx';
+import EmployeeList from "./pages/EmployeeList.jsx";
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './assets/Logo.png';
@@ -114,6 +115,7 @@ function AppContent() {
                         <Route path="/remove-employee" element={<RemoveEmployee />} />
                         <Route path="/reports" element={<Reports />} />
                         <Route path="/verify-face" element={<VerifyFace />} />
+                        <Route path="/employee-list" element={<EmployeeList />} />
                     </Routes>
                 </main>
             </div>

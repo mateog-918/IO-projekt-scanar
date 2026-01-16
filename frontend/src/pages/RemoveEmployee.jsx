@@ -47,24 +47,73 @@ const RemoveEmployee = () => {
         }
     };
 
-    const handleRemove = () => {
+    const handleRemove = async () => {
         if (!selectedId) return;
 
-        Swal.fire({
+        // 1. Wyświetlenie okna potwierdzenia
+        const result = await Swal.fire({
             title: 'Are you sure?',
             text: `You are about to remove ${employeeData?.name} from database!`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#EF0000',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Tutaj dodałbyś fetch(..., { method: 'DELETE' })
-                Swal.fire('Deleted!', 'Employee has been removed.', 'success');
-                setEmployeeData(null);
-                setSelectedId('');
-            }
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
         });
+
+        // 2. Jeśli użytkownik kliknął "Yes, delete it!"
+        if (result.isConfirmed) {
+            try {
+                // Przygotowanie URL z parametrem confirm=true
+                const url = `http://localhost:5000/api/manage_employees/${selectedId}?confirm=true`;
+
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    // Jeśli backend wymaga employee_id również w body, odkomentuj poniższe:
+                    // body: JSON.stringify({ employee_id: selectedId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // 1. AKTUALIZACJA LISTY W STANIE (KLUCZOWY KROK)
+                    // Zakładamy, że Twoja lista pracowników nazywa się 'employees'
+                    const list_response = await fetch('http://localhost:5000/api/manage_employees/');
+                    const list_data = await list_response.json();
+                    setEmployees(Array.isArray(list_data) ? list_data : list_data.employees || []);
+
+                    // Czyszczenie stanu po poprawnym usunięciu
+                    setEmployeeData(null);
+                    setSelectedId('');
+
+                    // Sukces
+                    Swal.fire(
+                        'Deleted!',
+                        data.message || 'Employee has been removed.',
+                        'success'
+                    );
+
+                } else {
+                    // Błąd zwrócony przez serwer (np. 404 lub 500)
+                    Swal.fire(
+                        'Error!',
+                        data.message || 'Something went wrong while deleting.',
+                        'error'
+                    );
+                }
+            } catch (error) {
+                // Błąd połączenia
+                console.error("Delete error:", error);
+                Swal.fire(
+                    'Connection Error',
+                    'Could not connect to the server.',
+                    'error'
+                );
+            }
+        }
     };
 
     return (
@@ -128,7 +177,15 @@ const RemoveEmployee = () => {
                             <div className="qr-section">
                                 <label>QR Security Code</label>
                                 <div className="qr-box">
-                                    <QRCodeCanvas value={employeeData.qr_code_hash} size={120} />
+                                    {employeeData.qr_code_hash ? (
+                                        /* Jeśli hash istnieje, renderujemy kod QR */
+                                        <QRCodeCanvas value={employeeData.qr_code_hash} size={120}/>
+                                    ) : (
+                                        /* Jeśli hash jest pusty "", wyświetlamy komunikat */
+                                        <div className="no-qr-info">
+                                            <p>Ten pracownik nie ma przypisanego kodu QR</p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

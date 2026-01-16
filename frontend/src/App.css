@@ -424,6 +424,16 @@ html, body, #root {
   border: 1px solid #eee;
   display: flex;
   justify-content: center;
+  min-height: 120px;
+  align-items: center;
+}
+
+.no-qr-info p {
+  color: #ef0000; /* Czerwony kolor ostrzeżenia */
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  margin: 0;
 }
 
 .images-section label, .qr-section label {
@@ -462,4 +472,80 @@ html, body, #root {
   right: 20px;
   font-size: 0.9rem;
   color: #444;
+}
+
+/* Employee list page */
+.employee-list-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.page-title {
+  margin-bottom: 30px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.card-actions {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #f0f0f0;
+  text-align: right;
+}
+
+.main-content {
+  height: calc(100vh - 80px); /* Odliczamy wysokość headera */
+  overflow-y: auto;           /* To włącza przewijanie całego widoku */
+  padding: 20px;
+  box-sizing: border-box;
+  padding: 40px 20px; /* Większy padding góra/dół dla lepszego wyglądu */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+/* Styl dla strony listy pracowników */
+.employee-list-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px; /* Zapobiega zbyt szerokiemu rozciąganiu */
+  margin: 0 auto;
+}
+
+/* Nagłówek z wyszukiwarką, który może być przypięty na górze */
+.list-header-sticky {
+  padding-bottom: 15px;
+  border-bottom: none;
+  margin-bottom: 10px;
+}
+
+.search-input {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+}
+
+/* Odstępy między kartami w stosie */
+.employees-vertical-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-bottom: 50px; /* Miejsce na dole strony */
 }

@@ -6,8 +6,9 @@ const Sidebar = ({ isLoggedIn }) => {
     { name: 'Add an employee', path: '/add-employee', public: false },
     { name: 'Generate QR Code', path: '/generate-qr', public: false },
     { name: 'Add face pictures', path: '/add-face', public: false },
-    { name: 'Remove an employee', path: '/remove-employee', public: false },
+    { name: 'Manage an employee', path: '/remove-employee', public: false },
     { name: 'Reports', path: '/reports', public: false },
+    { name: 'Employee List', path: '/employee-list', public: false },
   ];
 
   return (
