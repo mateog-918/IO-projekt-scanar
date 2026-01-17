@@ -47,6 +47,182 @@ const RemoveEmployee = () => {
         }
     };
 
+    const toggleActivation = async () => {
+        if (!selectedId || !employeeData) return;
+
+        // Określamy akcję na podstawie obecnego stanu pracownika
+        const action = employeeData.is_active ? 'deactivate' : 'activate';
+        const url = `http://localhost:5000/api/manage_employees/${selectedId}/${action}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Aktualizujemy dane wyświetlane w podglądzie (prawa strona)
+                setEmployeeData(data.employee);
+
+                // Aktualizujemy stan na liście głównej (aby dropdown był spójny)
+                setEmployees(prev => prev.map(emp =>
+                    emp.id === selectedId ? { ...emp, is_active: data.employee.is_active } : emp
+                ));
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Status Updated',
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire('Error!', data.message || 'Failed to update status', 'error');
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Connection error to the server.', 'error');
+        }
+    };
+
+    // 1. Logika edycji danych pracownika
+    const handleEdit = async () => {
+        if (!selectedId || !employeeData) return;
+
+        const { value: formValues } = await Swal.fire({
+            title: 'Edit Employee Details',
+            html: `
+            <style>
+                .swal-form-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                    padding: 10px 0;
+                }
+                .swal-field-group {
+                    display: flex;
+                    flex-direction: column;
+                    text-align: left;
+                }
+                .swal-field-group label {
+                    font-weight: 600;
+                    font-size: 14px;
+                    margin-bottom: 5px;
+                    color: #555;
+                    margin-left: 3px;
+                }
+                .swal-field-group input {
+                    margin: 0 !important; /* Nadpisujemy marginesy swal2-input */
+                    width: 100% !important;
+                    box-sizing: border-box;
+                    height: 45px;
+                }
+            </style>
+            <div class="swal-form-container">
+                <div class="swal-field-group">
+                    <label for="swal-name">Full Name</label>
+                    <input id="swal-name" class="swal2-input" value="${employeeData.name}" placeholder="Enter name">
+                </div>
+                <div class="swal-field-group">
+                    <label for="swal-position">Position</label>
+                    <input id="swal-position" class="swal2-input" value="${employeeData.position}" placeholder="Enter position">
+                </div>
+                <div class="swal-field-group">
+                    <label for="swal-department">Department</label>
+                    <input id="swal-department" class="swal2-input" value="${employeeData.department}" placeholder="Enter department">
+                </div>
+            </div>
+        `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonColor: '#3498db',
+            confirmButtonText: 'Save Changes',
+            preConfirm: () => {
+                const name = document.getElementById('swal-name').value;
+                const position = document.getElementById('swal-position').value;
+                const department = document.getElementById('swal-department').value;
+
+                if (!name || !position || !department) {
+                    Swal.showValidationMessage('Please fill out all fields');
+                    return false;
+                }
+
+                return { name, position, department };
+            }
+        });
+
+        if (formValues) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/manage_employees/${selectedId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formValues)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    setEmployeeData(data.employee);
+                    setEmployees(prev => prev.map(emp => emp.id === selectedId ? { ...emp, ...formValues } : emp));
+                    Swal.fire('Updated!', data.message, 'success');
+                } else {
+                    Swal.fire('Error', data.message, 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Connection failed', 'error');
+            }
+        }
+    };
+
+// 2. Logika usuwania konkretnej twarzy
+    const handleDeleteFace = async (faceIndex) => {
+        // faceIndex przychodzi z onClick={() => handleDeleteFace(idx)}
+        if (faceIndex === undefined || faceIndex === null) return;
+
+        const result = await Swal.fire({
+            title: 'Delete this face pattern?',
+            text: "This action cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EF0000',
+            confirmButtonText: 'Yes, delete it!'
+        });
+
+        if (result.isConfirmed) {
+            // Opcjonalnie: pokazujemy loader na czas usuwania
+            Swal.fire({
+                title: 'Removing...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            try {
+                const response = await fetch(`http://localhost:5000/api/manage_employees/${selectedId}/faces/${faceIndex+1}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Odświeżamy dane pracownika, aby pobrać aktualną listę ścieżek do zdjęć
+                    const refreshRes = await fetch(`http://localhost:5000/api/manage_employees/${selectedId}`);
+                    const refreshData = await refreshRes.json();
+                    setEmployeeData(refreshData.employee);
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: data.message,
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                } else {
+                    Swal.fire('Error', data.message || 'Could not delete face', 'error');
+                }
+            } catch (error) {
+                Swal.fire('Error', 'Connection failed', 'error');
+            }
+        }
+    };
+
     const handleRemove = async () => {
         if (!selectedId) return;
 
@@ -136,17 +312,36 @@ const RemoveEmployee = () => {
                                     </option>
                                 ))
                             ) : (
-                              <option disabled>Błąd ładowania pracowników...</option>
+                                <option disabled>Błąd ładowania pracowników...</option>
                             )}
                         </select>
                     </div>
                     <button
                         className={`btn-main ${!selectedId ? 'btn-disabled' : ''}`}
-                        style={{ backgroundColor: '#EF0000' }}
+                        style={{backgroundColor: '#EF0000'}}
                         onClick={handleRemove}
                         disabled={!selectedId}
                     >
                         Remove from database
+                    </button>
+                    <button
+                        className={`btn-main ${!selectedId ? 'btn-disabled' : ''}`}
+                        style={{
+                            backgroundColor: employeeData?.is_active ? '#f39c12' : '#27ae60',
+                            marginTop: '10px' // Opcjonalnie, jeśli chcesz je rozdzielić pionowo
+                        }}
+                        onClick={toggleActivation}
+                        disabled={!selectedId}
+                    >
+                        {employeeData?.is_active ? 'Deactivate Employee' : 'Activate Employee'}
+                    </button>
+                    <button
+                        className={`btn-main ${!selectedId ? 'btn-disabled' : ''}`}
+                        style={{backgroundColor: '#3498db', marginTop: '10px'}}
+                        onClick={handleEdit}
+                        disabled={!selectedId}
+                    >
+                        Edit Employee Details
                     </button>
                 </div>
             </div>
@@ -191,15 +386,23 @@ const RemoveEmployee = () => {
                         </div>
 
                         <div className="images-section">
-                            <label>Registered Face Patterns</label>
+                            <label>Registered Face Patterns (Click 'X' to remove)</label>
                             <div className="face-images-grid">
                                 {employeeData.face_image_paths.map((path, idx) => (
-                                    <img
-                                        key={idx}
-                                        src={`http://localhost:5000/${path}`}
-                                        alt="Face sample"
-                                        className="small-face-thumb"
-                                    />
+                                    <div key={idx} className="face-thumb-wrapper"
+                                         style={{position: 'relative', display: 'inline-block'}}>
+                                        <img
+                                            src={`http://localhost:5000/${path}`}
+                                            alt={`Face pattern ${idx}`}
+                                            className="small-face-thumb"
+                                        />
+                                        <button
+                                            className="delete-face-btn"
+                                            onClick={() => handleDeleteFace(idx)}
+                                        >
+                                            &times;
+                                        </button>
+                                    </div>
                                 ))}
                             </div>
                         </div>

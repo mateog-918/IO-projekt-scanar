@@ -35,6 +35,7 @@ const EmployeeList = () => {
     }
 
     return (
+        <div className="form-container">
         <div className="employee-list-page">
             <div className="list-header-sticky">
                 <h2>Employee Directory ({filteredEmployees.length})</h2>
@@ -113,6 +114,7 @@ const EmployeeList = () => {
                     </div>
                 )}
             </div>
+        </div>
         </div>
     );
 };

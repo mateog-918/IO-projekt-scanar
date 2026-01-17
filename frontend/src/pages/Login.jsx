@@ -53,7 +53,8 @@ const Login = ({ auth, onLoginSuccess, onLogout }) => {
     // WIDOK PO ZALOGOWANIU (Zgodny z Twoim zdjęciem)
     if (auth.loggedIn) {
         return (
-            <div className="form-container" style={{
+            <div className="form-container">
+            <div style={{
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -68,19 +69,10 @@ const Login = ({ auth, onLoginSuccess, onLogout }) => {
                 <button
                     className="btn-main"
                     onClick={onLogout}
-                    style={{
-                        backgroundColor: '#6cc3ea', // Niebieski kolor przycisku
-                        padding: '15px 40px',
-                        fontSize: '1.4rem',
-                        borderRadius: '15px',
-                        boxShadow: '4px 4px 10px rgba(0,0,0,0.1)',
-                        border: 'none',
-                        color: 'white',
-                        cursor: 'pointer'
-                    }}
                 >
                     Wyloguj się
                 </button>
+            </div>
             </div>
         );
     }
