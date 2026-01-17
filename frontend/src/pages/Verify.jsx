@@ -99,7 +99,7 @@ const Verify = () => {
 
       const data = await response.json();
 
-      if (response.status === 200 && data.success) {
+      if (response.status === 200 && data.success && data.employee.is_active) {
         // SUKCES: 200 OK
         Swal.fire({
           icon: 'success',
@@ -112,18 +112,22 @@ const Verify = () => {
           navigate('/verify-face', { state: { employeeId: data.employee.id } });
         });
 
-      } else if (response.status === 400 || response.status === 404) {
-        // BŁĄD: 400 (Brak danych) lub 404 (Nie znaleziono)
+      } else {
+        let errorMessage = data.message || 'Weryfikacja nieudana';
+
+        // Specyficzny komunikat dla nieaktywnego konta, które przyszło ze statusem 200
+        if (response.status === 200 && data.employee && !data.employee.is_active) {
+          errorMessage = 'Twoje konto jest nieaktywne. Skontaktuj się z administratorem.';
+        }
+
         Swal.fire({
           icon: 'error',
           title: 'Weryfikacja nieudana',
-          text: data.message,
+          text: errorMessage,
         });
-        handleFailure(data.message || 'Nieprawidłowy kod');
 
-      } else {
-        // Inne błędy (np. 500)
-        throw new Error('Błąd serwera');
+        // Tutaj wywołujemy Twoją logikę rejestrowania błędów (licznik prób)
+        handleFailure(errorMessage);
       }
 
     } catch (error) {

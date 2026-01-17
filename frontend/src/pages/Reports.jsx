@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import '../assets/Roboto-Regular-normal.js';
 
 const Reports = () => {
     const [formData, setFormData] = useState({ employeeId: '', eventType: '', startDate: '', endDate: '' });
@@ -161,6 +164,69 @@ const Reports = () => {
         fetchLogs(newOffset);
     };
 
+    const downloadPDF = () => {
+        const doc = new jsPDF();
+
+        // Nazwa 'Roboto-Regular' musi być identyczna jak ta w wygenerowanym pliku .js
+        doc.addFont("Roboto-Regular-normal.ttf", "Roboto", "normal");
+        doc.setFont("Roboto");
+
+        // Dodanie tytułu raportu
+        doc.setFontSize(18);
+        doc.text('Event Report', 14, 22);
+        doc.setFontSize(11);
+        doc.setTextColor(100);
+
+        // Dodanie informacji o filtrach (opcjonalnie)
+        const dateRange = formData.startDate && formData.endDate
+            ? `Period: ${formData.startDate.replace('T', ' ')} - ${formData.endDate.replace('T', ' ')}`
+            : 'Period: All entries';
+        doc.text(`${dateRange} | Generated: ${new Date().toLocaleDateString()}`, 14, 30);
+
+        // Przygotowanie danych do tabeli
+        const tableColumn = ["ID", "Timestamp", "Event Type", "Employee", "Message"];
+        const tableRows = logs.map(log => [
+            log.id,
+            formatTimestamp(log.timestamp),
+            log.event_type,
+            log.employee_name || log.employee_id || '-',
+            log.message || '-'
+        ]);
+
+        // --- Generowanie tabeli z ustawieniami szerokości ---
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 35,
+            theme: 'striped',
+            styles: {
+                fontSize: 8,
+                cellPadding: 3,
+                overflow: 'linebreak',
+                valign: 'middle',
+                font: 'Roboto' // Jeśli wgrałeś czcionkę, zmień na jej nazwę
+            },
+            headStyles: {
+                fillColor: [0, 102, 204],
+                fontSize: 9,
+                halign: 'left'
+            },
+            // KLUCZOWE: Dostosowanie szerokości, aby Employee się mieścił
+            columnStyles: {
+                0: { cellWidth: 10 },  // ID
+                1: { cellWidth: 32 },  // Timestamp
+                2: { cellWidth: 35 },  // Event Type
+                3: { cellWidth: 35 },  // Employee - zwiększona szerokość, by nie łamało nazwiska
+                4: { cellWidth: 'auto' } // Message - zajmuje resztę miejsca
+            },
+            margin: { left: 14, right: 14 },
+        });
+
+        // Zapis pliku
+        const fileName = `report_${new Date().toISOString().slice(0, 10)}.pdf`;
+        doc.save(fileName);
+    };
+
     return (
         <div className="form-container">
             <div className="input-group-row">
@@ -169,7 +235,7 @@ const Reports = () => {
                     <select
                         className="custom-select"
                         value={formData.employeeId}
-                        onChange={(e) => setFormData({ ...formData, employeeId: e.target.value })}
+                        onChange={(e) => setFormData({...formData, employeeId: e.target.value})}
                     >
                         <option value="">All employees</option>
                         {employees.map(emp => (
@@ -183,7 +249,7 @@ const Reports = () => {
                     <select
                         className="custom-select"
                         value={formData.eventType}
-                        onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
+                        onChange={(e) => setFormData({...formData, eventType: e.target.value})}
                     >
                         <option value="">All types</option>
                         {eventTypes.map((et, i) => (
@@ -194,29 +260,40 @@ const Reports = () => {
 
                 <div className="input-field">
                     <label>Start (local)</label>
-                    <input type="datetime-local" value={formData.startDate} onChange={e => setFormData({ ...formData, startDate: e.target.value })} />
+                    <input type="datetime-local" value={formData.startDate}
+                           onChange={e => setFormData({...formData, startDate: e.target.value})}/>
                 </div>
 
                 <div className="input-field">
                     <label>End (local)</label>
-                    <input type="datetime-local" value={formData.endDate} onChange={e => setFormData({ ...formData, endDate: e.target.value })} />
+                    <input type="datetime-local" value={formData.endDate}
+                           onChange={e => setFormData({...formData, endDate: e.target.value})}/>
                 </div>
 
                 <div className="input-field">
                     <label>Limit</label>
-                    <input type="number" value={limit} onChange={e => setLimit(Number(e.target.value) || 100)} />
+                    <input type="number" value={limit} onChange={e => setLimit(Number(e.target.value) || 100)}/>
                 </div>
 
                 <button className="btn-main" onClick={handleSearch} disabled={loading}>
                     {loading ? 'Loading...' : 'Check report'}
                 </button>
+                <button
+                    className="btn-main"
+                    style={{backgroundColor: '#2ecc71'}}
+                    onClick={downloadPDF}
+                    disabled={loading || logs.length === 0}
+                >
+                    {loading ? 'Loading...' : 'Download PDF'}
+                </button>
+
             </div>
 
             <div className="qr-code-display">
                 <label>Report of events:</label>
 
-                <div style={{ marginTop: 12, maxHeight: '60vh', overflowY: 'auto' }}>
-                    <table className="table" style={{ borderCollapse: 'collapse', width: '100%' }}>
+                <div style={{marginTop: 12, maxHeight: '60vh', overflowY: 'auto'}}>
+                <table className="table" style={{ borderCollapse: 'collapse', width: '100%' }}>
                         <thead>
                             <tr>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>ID</th>
