@@ -114,9 +114,10 @@ const Verify = () => {
 
       } else {
         let errorMessage = data.message || 'Weryfikacja nieudana';
+        
 
-        // Specyficzny komunikat dla nieaktywnego konta, które przyszło ze statusem 200
-        if (response.status === 200 && data.employee && !data.employee.is_active) {
+          // Bezpieczne sprawdzenie: czy employee istnieje ORAZ czy jest nieaktywny
+        if (data.employee && data.employee.is_active === false) {
           errorMessage = 'Twoje konto jest nieaktywne. Skontaktuj się z administratorem.';
         }
 

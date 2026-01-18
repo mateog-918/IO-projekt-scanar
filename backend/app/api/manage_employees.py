@@ -143,11 +143,11 @@ def add_employee_face(employee_id):
 def get_employees():
     """
     Pobierz listę wszystkich pracowników
-    Parametr opcjonalny: ?active=true/false/all (domyślnie: true)
+    Parametr opcjonalny: ?active=true/false/all (domyślnie: all)
     """
     try:
         # Get optional filter parameter
-        active_filter = request.args.get('active', 'true').lower()
+        active_filter = request.args.get('active', 'all').lower()
         
         if active_filter == 'true':
             employees = Employee.query.filter_by(is_active=True).all()

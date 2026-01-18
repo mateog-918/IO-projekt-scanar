@@ -67,11 +67,14 @@ html, body, #root {
 .main-content {
   background: linear-gradient(180deg, #FFE4B9 0%, #ffffff 100%);
   padding: 60px;
+  padding-bottom: 100px !important; 
+  box-sizing: border-box;
 }
 
 .input-group-row{
   display: flex;
   flex-direction: column;
+  overflow: auto;
   gap: 40px;
   min-width: 300px;
 }
@@ -82,6 +85,35 @@ html, body, #root {
   justify-content: center;
   align-items: center;
   gap: 20%;
+}
+
+.form-container1 {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto; 
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.form-container-raports {
+  display: flex;
+  flex-direction: column; /* Zmienione z row na column */
+  align-items: center;
+  gap: 20px;             /* Procenty w gap bywają problematyczne, lepiej użyć px */
+  
+  /* KLUCZOWE DLA PRZEWIJANIA: */
+  height: calc(100vh - 100px); /* Wysokość ekranu minus wysokość Twojego headera */
+  overflow-y: auto;            /* Teraz przeglądarka wie, kiedy zacząć przewijać */
+  padding-bottom: 50px;        /* Miejsce na dole, o które pytałeś wcześniej */
+  
+  /* Opcjonalnie, aby zawartość nie była "przyklejona" do boków */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-container-raports::-webkit-scrollbar {
+  display: none;
 }
 
 /* Stylizacja pól wejściowych */
@@ -552,6 +584,7 @@ html, body, #root {
   max-width: 1000px;
   gap: 20px;
   width: 100%;
+  margin-bottom: 20px;
 }
 
 .employee-list-page::-webkit-scrollbar {

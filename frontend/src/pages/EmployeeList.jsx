@@ -9,7 +9,7 @@ const EmployeeList = () => {
 
     const fetchEmployees = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/manage_employees/');
+            const response = await fetch('http://localhost:5000/api/manage_employees/?active=all');
             const data = await response.json();
             setEmployees(Array.isArray(data) ? data : data.employees || []);
         } catch (error) {
@@ -113,6 +113,7 @@ const EmployeeList = () => {
                         ))}
                     </div>
                 )}
+                <div style={{ height: '80px', width: '100%' }}></div>
             </div>
         </div>
         </div>

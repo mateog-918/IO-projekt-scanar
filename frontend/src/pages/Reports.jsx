@@ -228,7 +228,8 @@ const Reports = () => {
     };
 
     return (
-        <div className="form-container">
+        <div className="form-container-raports">
+        <div className="form-container1">
             <div className="input-group-row">
                 <div className="input-field">
                     <label>Employee</label>
@@ -280,7 +281,7 @@ const Reports = () => {
                 </button>
                 <button
                     className="btn-main"
-                    style={{backgroundColor: '#2ecc71'}}
+                    style={{backgroundColor: '#2ecc71', marginBottom: '20px'}}
                     onClick={downloadPDF}
                     disabled={loading || logs.length === 0}
                 >
@@ -343,6 +344,9 @@ const Reports = () => {
                     </div>
                 </div>
             </div>
+            <div style={{ height: '80px', width: '100%' }}></div>
+        </div>
+        <div style={{ height: '80px', width: '100%' }}></div>
         </div>
     );
 };
