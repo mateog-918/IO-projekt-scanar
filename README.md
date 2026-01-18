@@ -147,7 +147,7 @@ Comprehensive documentation is available:
 
 - [Mateusz Gacek](https://github.com/mateog-918)
 - [Jan Ogiegło](https://github.com/Janosik8)
-- [Paweł Kowalczek](https://github.com/PawelKowalcze)
+- [Paweł Kowalcze](https://github.com/PawelKowalcze)
 
 **University**: AGH University of Krakow  
 **Academic Year**: 2025/2026
