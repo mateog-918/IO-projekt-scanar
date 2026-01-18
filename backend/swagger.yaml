@@ -693,6 +693,298 @@ paths:
         500:
           description: "Błąd serwera"
 
+  /logs/:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz wszystkie logi"
+      description: "Zwraca listę wszystkich logów z opcjonalną paginacją"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+          description: "Liczba wyników na stronę"
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+          description: "Liczba wyników do pominięcia"
+      responses:
+        200:
+          description: "Lista logów"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              total:
+                type: "integer"
+                example: 500
+              limit:
+                type: "integer"
+                example: 100
+              offset:
+                type: "integer"
+                example: 0
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        500:
+          description: "Błąd serwera"
+
+  /logs/type/{event_type}:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz logi według typu zdarzenia"
+      description: "Filtruje logi po konkretnym typie zdarzenia (np. INVALID_QR, VERIFICATION_SUCCESS)"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "event_type"
+          type: "string"
+          required: true
+          description: "Typ zdarzenia"
+          enum: ["INVALID_QR", "FACE_MISMATCH", "VERIFICATION_SUCCESS", "QR_SCANNED", "FACE_SCANNED"]
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+      responses:
+        200:
+          description: "Lista logów danego typu"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              event_type:
+                type: "string"
+                example: "VERIFICATION_SUCCESS"
+              total:
+                type: "integer"
+              limit:
+                type: "integer"
+              offset:
+                type: "integer"
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        500:
+          description: "Błąd serwera"
+
+  /logs/employee/{employee_id}:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz logi dla konkretnego pracownika"
+      description: "Zwraca wszystkie logi związane z danym pracownikiem"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "employee_id"
+          type: "integer"
+          required: true
+          description: "ID pracownika"
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+      responses:
+        200:
+          description: "Lista logów pracownika"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              employee_id:
+                type: "integer"
+                example: 5
+              total:
+                type: "integer"
+              limit:
+                type: "integer"
+              offset:
+                type: "integer"
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        500:
+          description: "Błąd serwera"
+
+  /logs/date-range:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz logi w zakresie dat"
+      description: "Filtruje logi według przedziału czasowego (wymaga start_date i end_date w formacie ISO)"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "query"
+          name: "start_date"
+          type: "string"
+          required: true
+          description: "Data początkowa (ISO format: 2024-01-15T00:00:00)"
+          example: "2024-01-15T00:00:00"
+        - in: "query"
+          name: "end_date"
+          type: "string"
+          required: true
+          description: "Data końcowa (ISO format: 2024-01-15T23:59:59)"
+          example: "2024-01-15T23:59:59"
+        - in: "query"
+          name: "limit"
+          type: "integer"
+          required: false
+          default: 100
+        - in: "query"
+          name: "offset"
+          type: "integer"
+          required: false
+          default: 0
+      responses:
+        200:
+          description: "Lista logów w podanym zakresie"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              start_date:
+                type: "string"
+              end_date:
+                type: "string"
+              total:
+                type: "integer"
+              limit:
+                type: "integer"
+              offset:
+                type: "integer"
+              logs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/EventLog"
+        400:
+          description: "Błąd walidacji (brak parametrów lub nieprawidłowy format daty)"
+        500:
+          description: "Błąd serwera"
+
+  /logs/statistics:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz statystyki zdarzeń"
+      description: "Zwraca zagregowane statystyki - liczba każdego typu zdarzenia"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Statystyki zdarzeń"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              statistics:
+                type: "object"
+                additionalProperties:
+                  type: "integer"
+                example:
+                  VERIFICATION_SUCCESS: 150
+                  FACE_MISMATCH: 12
+                  INVALID_QR: 5
+                  QR_SCANNED: 145
+                  FACE_SCANNED: 140
+        500:
+          description: "Błąd serwera"
+
+  /logs/image/{log_id}:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz zdjęcie z konkretnego logu"
+      description: "Zwraca fizyczny plik obrazu powiązany z zdarzeniem (jeśli istnieje)"
+      produces:
+        - "image/png"
+      parameters:
+        - in: "path"
+          name: "log_id"
+          type: "integer"
+          required: true
+          description: "ID logu"
+      responses:
+        200:
+          description: "Obraz PNG"
+          schema:
+            type: "file"
+        404:
+          description: "Nie znaleziono logu lub brak powiązanego obrazu"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: false
+              error:
+                type: "string"
+                example: "Log entry not found"
+        500:
+          description: "Błąd serwera"
+
+  /logs/event-types:
+    get:
+      tags:
+        - "Logging"
+      summary: "Pobierz wszystkie typy zdarzeń"
+      description: "Zwraca listę wszystkich możliwych typów zdarzeń używanych w systemie"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Lista typów zdarzeń"
+          schema:
+            type: "object"
+            properties:
+              success:
+                type: "boolean"
+                example: true
+              event_types:
+                type: "array"
+                items:
+                  type: "string"
+                example: ["INVALID_QR", "FACE_MISMATCH", "VERIFICATION_SUCCESS", "QR_SCANNED", "FACE_SCANNED"]
+        500:
+          description: "Błąd serwera"
+
   /verification/save_qr:
     post:
       tags:
