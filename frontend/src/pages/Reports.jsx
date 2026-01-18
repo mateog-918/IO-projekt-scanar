@@ -300,7 +300,7 @@ const Reports = () => {
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>ID</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Timestamp</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Event Type</th>
-                                <th style={{ border: '1px solid #ccc', padding: 8 }}>Employee</th>
+                                <th style={{ border: '1px solid #ccc', padding: 8 }}>Employee_id</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Message</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Image</th>
                             </tr>
@@ -314,7 +314,9 @@ const Reports = () => {
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.id}</td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{formatTimestamp(log.timestamp)}</td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.event_type}</td>
-                                    <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.employee_name || log.employee_id || '-'}</td>
+                                    <td style={{ border: '1px solid #ccc', padding: 8 }}>
+                                         {log.employee_id || <span style={{color: 'red'}}>Usunięty pracownik</span>}
+                                    </td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.message || '-'}</td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.image_path ? <a href={`http://localhost:5000/${log.image_path}`} target="_blank" rel="noreferrer">View</a> : '-'}</td>
                                 </tr>
