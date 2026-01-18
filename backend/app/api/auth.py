@@ -23,9 +23,32 @@ def login_required(f):
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """
-    Admin login endpoint
-    Expects JSON: {"username": "admin", "password": "admin123"}
-    Returns: {"success": true/false, "message": "...", "user": {...}}
+    Authenticates an administrator and starts a session.
+
+    **Expected JSON Body:**
+
+    .. code-block:: json
+
+        {
+            "username": "admin",
+            "password": "admin123"
+        }
+
+    **Returns:**
+
+    .. code-block:: json
+
+        {
+            "success": true,
+            "message": "Login successful",
+            "user": {
+                "username": "admin",
+                "role": "administrator"
+            }
+        }
+
+    :return: JSON response with authentication status.
+    :rtype: flask.Response
     """
     try:
         data = request.get_json()

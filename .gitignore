@@ -72,3 +72,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+#ignoring doc building files
