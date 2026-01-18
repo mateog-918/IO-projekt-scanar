@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>app.services.face_recog &#8212; Scanar 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="../../../_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.services.face_recog</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for app.services.face_recog</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Face Recognition Service</span>
+<span class="sd">------------------------</span>
+<span class="sd">This module provides utility functions for handling face encodings, including</span>
+<span class="sd">conversion between binary storage and NumPy arrays, and logic for matching </span>
+<span class="sd">embeddings against stored employee data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.models.employee</span><span class="w"> </span><span class="kn">import</span> <span class="n">Employee</span>
+
+
+<div class="viewcode-block" id="encode_to_bytes">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.encode_to_bytes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">encode_to_bytes</span><span class="p">(</span><span class="n">vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a NumPy encoding vector into a binary format for database storage.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vec (np.ndarray): The face encoding vector (usually 128 or 1024 dimensions).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bytes: The float32 representation of the vector in bytes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="decode_from_bytes">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.decode_from_bytes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">decode_from_bytes</span><span class="p">(</span><span class="n">b</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts binary data from the database back into a NumPy array.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        b (bytes): The binary float32 data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: The reconstructed face encoding vector.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_face_encodings">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.get_face_encodings">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_face_encodings</span><span class="p">(</span><span class="n">emp</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves all available face encodings for a given employee.</span>
+
+<span class="sd">    Scans all five potential encoding slots in the Employee model and </span>
+<span class="sd">    decodes any that are not null.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        emp (Employee): The employee instance to scan.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.ndarray: A 2D array of shape (N, D) where N is the number of encodings </span>
+<span class="sd">        found and D is the vector dimension. Returns an empty array if none found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">encs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="p">(</span>
+        <span class="n">emp</span><span class="o">.</span><span class="n">face_encoding_1</span><span class="p">,</span>
+        <span class="n">emp</span><span class="o">.</span><span class="n">face_encoding_2</span><span class="p">,</span>
+        <span class="n">emp</span><span class="o">.</span><span class="n">face_encoding_3</span><span class="p">,</span>
+        <span class="n">emp</span><span class="o">.</span><span class="n">face_encoding_4</span><span class="p">,</span>
+        <span class="n">emp</span><span class="o">.</span><span class="n">face_encoding_5</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">encs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decode_from_bytes</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">encs</span><span class="p">)</span> <span class="k">if</span> <span class="n">encs</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,))</span></div>
+
+
+
+<div class="viewcode-block" id="count_face_encodings">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.count_face_encodings">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_face_encodings</span><span class="p">(</span><span class="n">emp</span><span class="p">:</span> <span class="n">Employee</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Counts how many face encoding slots are currently filled for an employee.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        emp (Employee): The employee instance.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: Number of stored encodings (0 to 5).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_face_encodings</span><span class="p">(</span><span class="n">emp</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="add_face_encoding">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.add_face_encoding">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_face_encoding</span><span class="p">(</span><span class="n">emp</span><span class="p">:</span> <span class="n">Employee</span><span class="p">,</span> <span class="n">vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">image_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adds a new face encoding to the first available slot (1-5).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        emp (Employee): The employee instance to update.</span>
+<span class="sd">        vec (np.ndarray): The new face encoding vector.</span>
+<span class="sd">        image_path (Optional[str]): filesystem path to the source image.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the encoding was added, False if all slots were full.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">encode_to_bytes</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
+    <span class="n">slots</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;face_encoding_1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_encoding_2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_encoding_3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_encoding_4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_encoding_5&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">path_slots</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;face_image_path_1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_image_path_2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_image_path_3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_image_path_4&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;face_image_path_5&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">slot</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">slots</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">emp</span><span class="p">,</span> <span class="n">slot</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">emp</span><span class="p">,</span> <span class="n">slot</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">image_path</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="n">emp</span><span class="p">,</span> <span class="n">path_slots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">image_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="remove_face_encoding">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.remove_face_encoding">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_face_encoding</span><span class="p">(</span><span class="n">emp</span><span class="p">:</span> <span class="n">Employee</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes the face encoding and associated image path at a specific slot.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        emp (Employee): The employee instance.</span>
+<span class="sd">        index (int): The slot index to clear (1-based, 1 to 5).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">emp</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;face_encoding_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">emp</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;face_image_path_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="matches_embedding">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.matches_embedding">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">matches_embedding</span><span class="p">(</span><span class="n">emp</span><span class="p">:</span> <span class="n">Employee</span><span class="p">,</span> <span class="n">query_vec</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">metric</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compares a new face embedding against all stored encodings for an employee.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        emp (Employee): The employee to verify against.</span>
+<span class="sd">        query_vec (np.ndarray): The encoding vector from the camera.</span>
+<span class="sd">        threshold (float): The maximum distance to consider a &#39;match&#39;. </span>
+<span class="sd">            Lower is stricter. Defaults to 0.6.</span>
+<span class="sd">        metric (str): The distance calculation method (&#39;euclidean&#39; or &#39;cosine&#39;).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if any stored encoding is within the threshold distance.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If an unsupported metric is provided.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">encs</span> <span class="o">=</span> <span class="n">get_face_encodings</span><span class="p">(</span><span class="n">emp</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">encs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;euclidean&quot;</span><span class="p">:</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">encs</span> <span class="o">-</span> <span class="n">query_vec</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">metric</span> <span class="o">==</span> <span class="s2">&quot;cosine&quot;</span><span class="p">:</span>
+        <span class="n">qn</span> <span class="o">=</span> <span class="n">query_vec</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">query_vec</span><span class="p">)</span>
+        <span class="n">en</span> <span class="o">=</span> <span class="n">encs</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">encs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">dists</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">en</span> <span class="o">@</span> <span class="n">qn</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unsupported metric&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dists</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">threshold</span></div>
+
+
+
+<div class="viewcode-block" id="matches_face_image">
+<a class="viewcode-back" href="../../../app.services.html#app.services.face_recog.matches_face_image">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">matches_face_image</span><span class="p">(</span><span class="n">emp</span><span class="p">:</span> <span class="n">Employee</span><span class="p">,</span> <span class="n">image_bytes</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Processes a raw image and checks if it matches the stored employee encodings.</span>
+
+<span class="sd">    This is a high-level wrapper that performs face detection and encoding</span>
+<span class="sd">    extraction before calling :func:`matches_embedding`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        emp (Employee): The employee to verify.</span>
+<span class="sd">        image_bytes (bytes): Raw bytes of the image (e.g., from a request).</span>
+<span class="sd">        tolerance (float): Matching strictness. Defaults to 0.6.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if a face is detected and matches.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        RuntimeError: If the `face_recognition` library is not installed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">face_recognition</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;face_recognition is required for image-based matching&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+    <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">image_bytes</span><span class="p">))</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">)</span>
+    <span class="n">img_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+    <span class="n">encs</span> <span class="o">=</span> <span class="n">face_recognition</span><span class="o">.</span><span class="n">face_encodings</span><span class="p">(</span><span class="n">img_arr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">encs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">query_vec</span> <span class="o">=</span> <span class="n">encs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">matches_embedding</span><span class="p">(</span><span class="n">emp</span><span class="p">,</span> <span class="n">query_vec</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="n">tolerance</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.services.face_recog</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Jan Paweł Mateusz.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    </div>
+  </body>
+</html>

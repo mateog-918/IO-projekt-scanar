@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>app.models package &#8212; Scanar 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="app.services package" href="app.services.html" />
+    <link rel="prev" title="app.api package" href="app.api.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="app.services.html" title="app.services package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="app.api.html" title="app.api package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="app.html" accesskey="U">app package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.models package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="app-models-package">
+<h1>app.models package<a class="headerlink" href="#app-models-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-app.models.employee">
+<span id="app-models-employee-module"></span><h2>app.models.employee module<a class="headerlink" href="#module-app.models.employee" title="Link to this heading">¶</a></h2>
+<section id="employee-model-module">
+<h3>Employee Model Module<a class="headerlink" href="#employee-model-module" title="Link to this heading">¶</a></h3>
+<p>This module defines the SQLAlchemy model for employees, storing biometric
+and professional data.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.employee.Employee">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.models.employee.</span></span><span class="sig-name descname"><span class="pre">Employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models/employee.html#Employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.employee.Employee" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Represents an employee in the system.</p>
+<p>This model handles the storage of personal details, professional roles,
+and the biometric data (QR hashes and face encodings) required for
+authentication.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#app.models.employee.Employee.created_at" title="Link to this definition">¶</a></dt>
+<dd><p>The timestamp when the employee was added to the system</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.department">
+<span class="sig-name descname"><span class="pre">department</span></span><a class="headerlink" href="#app.models.employee.Employee.department" title="Link to this definition">¶</a></dt>
+<dd><p>Company department name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_encoding_1">
+<span class="sig-name descname"><span class="pre">face_encoding_1</span></span><a class="headerlink" href="#app.models.employee.Employee.face_encoding_1" title="Link to this definition">¶</a></dt>
+<dd><p>First face encoding (stored as binary float32 array)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_encoding_2">
+<span class="sig-name descname"><span class="pre">face_encoding_2</span></span><a class="headerlink" href="#app.models.employee.Employee.face_encoding_2" title="Link to this definition">¶</a></dt>
+<dd><p>Second face encoding (stored as binary float32 array)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_encoding_3">
+<span class="sig-name descname"><span class="pre">face_encoding_3</span></span><a class="headerlink" href="#app.models.employee.Employee.face_encoding_3" title="Link to this definition">¶</a></dt>
+<dd><p>Third face encoding (stored as binary float32 array)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_encoding_4">
+<span class="sig-name descname"><span class="pre">face_encoding_4</span></span><a class="headerlink" href="#app.models.employee.Employee.face_encoding_4" title="Link to this definition">¶</a></dt>
+<dd><p>Fourth face encoding (stored as binary float32 array)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_encoding_5">
+<span class="sig-name descname"><span class="pre">face_encoding_5</span></span><a class="headerlink" href="#app.models.employee.Employee.face_encoding_5" title="Link to this definition">¶</a></dt>
+<dd><p>Fifth face encoding (stored as binary float32 array)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_image_path_1">
+<span class="sig-name descname"><span class="pre">face_image_path_1</span></span><a class="headerlink" href="#app.models.employee.Employee.face_image_path_1" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the first stored face image file</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_image_path_2">
+<span class="sig-name descname"><span class="pre">face_image_path_2</span></span><a class="headerlink" href="#app.models.employee.Employee.face_image_path_2" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the second stored face image file</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_image_path_3">
+<span class="sig-name descname"><span class="pre">face_image_path_3</span></span><a class="headerlink" href="#app.models.employee.Employee.face_image_path_3" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the third stored face image file</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_image_path_4">
+<span class="sig-name descname"><span class="pre">face_image_path_4</span></span><a class="headerlink" href="#app.models.employee.Employee.face_image_path_4" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the fourth stored face image file</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.face_image_path_5">
+<span class="sig-name descname"><span class="pre">face_image_path_5</span></span><a class="headerlink" href="#app.models.employee.Employee.face_image_path_5" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the fifth stored face image file</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.employee.Employee.id" title="Link to this definition">¶</a></dt>
+<dd><p>Unique identifier for the employee</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.is_active">
+<span class="sig-name descname"><span class="pre">is_active</span></span><a class="headerlink" href="#app.models.employee.Employee.is_active" title="Link to this definition">¶</a></dt>
+<dd><p>Boolean flag indicating if the employee record is active</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#app.models.employee.Employee.name" title="Link to this definition">¶</a></dt>
+<dd><p>Full name of the employee</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.position">
+<span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#app.models.employee.Employee.position" title="Link to this definition">¶</a></dt>
+<dd><p>Professional title (e.g., ‘Software Engineer’)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.qr_code_hash">
+<span class="sig-name descname"><span class="pre">qr_code_hash</span></span><a class="headerlink" href="#app.models.employee.Employee.qr_code_hash" title="Link to this definition">¶</a></dt>
+<dd><p>Unique hash generated from the employee’s QR code</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.employee.Employee.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#app.models.employee.Employee.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.employee.Employee.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models/employee.html#Employee.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.employee.Employee.to_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the employee instance into a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the basic employee info and
+a list of available image paths.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.models.event_log">
+<span id="app-models-event-log-module"></span><h2>app.models.event_log module<a class="headerlink" href="#module-app.models.event_log" title="Link to this heading">¶</a></h2>
+<section id="event-log-model-module">
+<h3>Event Log Model Module<a class="headerlink" href="#event-log-model-module" title="Link to this heading">¶</a></h3>
+<p>This module defines the models for tracking and logging verification events,
+including successful entries, face mismatches, and invalid QR scans.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.models.event_log.</span></span><span class="sig-name descname"><span class="pre">EventLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models/event_log.html#EventLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.event_log.EventLog" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Model</span></code></p>
+<p>Database model that stores a history of all verification attempts.</p>
+<p>This log acts as an audit trail for security, storing timestamps,
+event types, and optional image data of the verification attempt.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#app.models.event_log.EventLog.created_at" title="Link to this definition">¶</a></dt>
+<dd><p>Timezone-aware UTC timestamp of when this log entry was saved to the DB.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.employee">
+<span class="sig-name descname"><span class="pre">employee</span></span><a class="headerlink" href="#app.models.event_log.EventLog.employee" title="Link to this definition">¶</a></dt>
+<dd><p>SQLAlchemy relationship linking the log back to the Employee model.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.employee_id">
+<span class="sig-name descname"><span class="pre">employee_id</span></span><a class="headerlink" href="#app.models.event_log.EventLog.employee_id" title="Link to this definition">¶</a></dt>
+<dd><p>Foreign key linking to the <code class="xref py py-class docutils literal notranslate"><span class="pre">Employee</span></code> (null if QR was invalid).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.event_type">
+<span class="sig-name descname"><span class="pre">event_type</span></span><a class="headerlink" href="#app.models.event_log.EventLog.event_type" title="Link to this definition">¶</a></dt>
+<dd><p>The category of the event (maps to <a class="reference internal" href="#app.models.event_log.EventType" title="app.models.event_log.EventType"><code class="xref py py-class docutils literal notranslate"><span class="pre">EventType</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#app.models.event_log.EventLog.id" title="Link to this definition">¶</a></dt>
+<dd><p>Primary key for the log entry.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.image_data">
+<span class="sig-name descname"><span class="pre">image_data</span></span><a class="headerlink" href="#app.models.event_log.EventLog.image_data" title="Link to this definition">¶</a></dt>
+<dd><p>Binary blob of the captured image for direct database storage/retrieval.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.image_path">
+<span class="sig-name descname"><span class="pre">image_path</span></span><a class="headerlink" href="#app.models.event_log.EventLog.image_path" title="Link to this definition">¶</a></dt>
+<dd><p>Local filesystem path to the captured verification photo.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.message">
+<span class="sig-name descname"><span class="pre">message</span></span><a class="headerlink" href="#app.models.event_log.EventLog.message" title="Link to this definition">¶</a></dt>
+<dd><p>Human-readable details or error messages regarding the event.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.qr_code_hash">
+<span class="sig-name descname"><span class="pre">qr_code_hash</span></span><a class="headerlink" href="#app.models.event_log.EventLog.qr_code_hash" title="Link to this definition">¶</a></dt>
+<dd><p>The raw hash of the QR code that was presented to the scanner.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">t.ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Query</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#app.models.event_log.EventLog.query" title="Link to this definition">¶</a></dt>
+<dd><p>A SQLAlchemy query for a model. Equivalent to <code class="docutils literal notranslate"><span class="pre">db.session.query(Model)</span></code>. Can be
+customized per-model by overriding <code class="xref py py-attr docutils literal notranslate"><span class="pre">query_class</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The query interface is considered legacy in SQLAlchemy. Prefer using
+<code class="docutils literal notranslate"><span class="pre">session.execute(select())</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.timestamp">
+<span class="sig-name descname"><span class="pre">timestamp</span></span><a class="headerlink" href="#app.models.event_log.EventLog.timestamp" title="Link to this definition">¶</a></dt>
+<dd><p>Timezone-aware UTC timestamp of when the event actually occurred.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.models.event_log.EventLog.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models/event_log.html#EventLog.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.event_log.EventLog.to_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Serializes the log entry into a dictionary format.</p>
+<p>Handles timezone conversions to ensure all timestamps are
+returned as UTC ISO-8601 strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing all log fields and the employee’s name.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="app.models.event_log.EventType">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.models.event_log.</span></span><span class="sig-name descname"><span class="pre">EventType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/models/event_log.html#EventType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.models.event_log.EventType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Constants representing the different types of verification events
+supported by the system.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventType.FACE_MISMATCH">
+<span class="sig-name descname"><span class="pre">FACE_MISMATCH</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FACE_MISMATCH'</span></span><a class="headerlink" href="#app.models.event_log.EventType.FACE_MISMATCH" title="Link to this definition">¶</a></dt>
+<dd><p>The QR code was valid, but the captured face did not match the employee.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventType.FACE_SCANNED">
+<span class="sig-name descname"><span class="pre">FACE_SCANNED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'FACE_SCANNED'</span></span><a class="headerlink" href="#app.models.event_log.EventType.FACE_SCANNED" title="Link to this definition">¶</a></dt>
+<dd><p>A raw log indicating a face was successfully detected/scanned.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventType.INVALID_QR">
+<span class="sig-name descname"><span class="pre">INVALID_QR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'INVALID_QR'</span></span><a class="headerlink" href="#app.models.event_log.EventType.INVALID_QR" title="Link to this definition">¶</a></dt>
+<dd><p>The scanned QR code was not found in the database.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventType.QR_SCANNED">
+<span class="sig-name descname"><span class="pre">QR_SCANNED</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'QR_SCANNED'</span></span><a class="headerlink" href="#app.models.event_log.EventType.QR_SCANNED" title="Link to this definition">¶</a></dt>
+<dd><p>A raw log indicating a QR code was successfully read.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.models.event_log.EventType.VERIFICATION_SUCCESS">
+<span class="sig-name descname"><span class="pre">VERIFICATION_SUCCESS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'VERIFICATION_SUCCESS'</span></span><a class="headerlink" href="#app.models.event_log.EventType.VERIFICATION_SUCCESS" title="Link to this definition">¶</a></dt>
+<dd><p>Both QR and Face verification passed successfully.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.models">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.models" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">app.models package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-app.models.employee">app.models.employee module</a><ul>
+<li><a class="reference internal" href="#employee-model-module">Employee Model Module</a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee"><code class="docutils literal notranslate"><span class="pre">Employee</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.employee.Employee.created_at"><code class="docutils literal notranslate"><span class="pre">Employee.created_at</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.department"><code class="docutils literal notranslate"><span class="pre">Employee.department</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_encoding_1"><code class="docutils literal notranslate"><span class="pre">Employee.face_encoding_1</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_encoding_2"><code class="docutils literal notranslate"><span class="pre">Employee.face_encoding_2</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_encoding_3"><code class="docutils literal notranslate"><span class="pre">Employee.face_encoding_3</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_encoding_4"><code class="docutils literal notranslate"><span class="pre">Employee.face_encoding_4</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_encoding_5"><code class="docutils literal notranslate"><span class="pre">Employee.face_encoding_5</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_image_path_1"><code class="docutils literal notranslate"><span class="pre">Employee.face_image_path_1</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_image_path_2"><code class="docutils literal notranslate"><span class="pre">Employee.face_image_path_2</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_image_path_3"><code class="docutils literal notranslate"><span class="pre">Employee.face_image_path_3</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_image_path_4"><code class="docutils literal notranslate"><span class="pre">Employee.face_image_path_4</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.face_image_path_5"><code class="docutils literal notranslate"><span class="pre">Employee.face_image_path_5</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.id"><code class="docutils literal notranslate"><span class="pre">Employee.id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.is_active"><code class="docutils literal notranslate"><span class="pre">Employee.is_active</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.name"><code class="docutils literal notranslate"><span class="pre">Employee.name</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.position"><code class="docutils literal notranslate"><span class="pre">Employee.position</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.qr_code_hash"><code class="docutils literal notranslate"><span class="pre">Employee.qr_code_hash</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.query"><code class="docutils literal notranslate"><span class="pre">Employee.query</span></code></a></li>
+<li><a class="reference internal" href="#app.models.employee.Employee.to_dict"><code class="docutils literal notranslate"><span class="pre">Employee.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.models.event_log">app.models.event_log module</a><ul>
+<li><a class="reference internal" href="#event-log-model-module">Event Log Model Module</a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog"><code class="docutils literal notranslate"><span class="pre">EventLog</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.created_at"><code class="docutils literal notranslate"><span class="pre">EventLog.created_at</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.employee"><code class="docutils literal notranslate"><span class="pre">EventLog.employee</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.employee_id"><code class="docutils literal notranslate"><span class="pre">EventLog.employee_id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.event_type"><code class="docutils literal notranslate"><span class="pre">EventLog.event_type</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.id"><code class="docutils literal notranslate"><span class="pre">EventLog.id</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.image_data"><code class="docutils literal notranslate"><span class="pre">EventLog.image_data</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.image_path"><code class="docutils literal notranslate"><span class="pre">EventLog.image_path</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.message"><code class="docutils literal notranslate"><span class="pre">EventLog.message</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.qr_code_hash"><code class="docutils literal notranslate"><span class="pre">EventLog.qr_code_hash</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.query"><code class="docutils literal notranslate"><span class="pre">EventLog.query</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.timestamp"><code class="docutils literal notranslate"><span class="pre">EventLog.timestamp</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventLog.to_dict"><code class="docutils literal notranslate"><span class="pre">EventLog.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#app.models.event_log.EventType"><code class="docutils literal notranslate"><span class="pre">EventType</span></code></a><ul>
+<li><a class="reference internal" href="#app.models.event_log.EventType.FACE_MISMATCH"><code class="docutils literal notranslate"><span class="pre">EventType.FACE_MISMATCH</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventType.FACE_SCANNED"><code class="docutils literal notranslate"><span class="pre">EventType.FACE_SCANNED</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventType.INVALID_QR"><code class="docutils literal notranslate"><span class="pre">EventType.INVALID_QR</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventType.QR_SCANNED"><code class="docutils literal notranslate"><span class="pre">EventType.QR_SCANNED</span></code></a></li>
+<li><a class="reference internal" href="#app.models.event_log.EventType.VERIFICATION_SUCCESS"><code class="docutils literal notranslate"><span class="pre">EventType.VERIFICATION_SUCCESS</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.models">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="app.api.html"
+                          title="previous chapter">app.api package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="app.services.html"
+                          title="next chapter">app.services package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/app.models.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="app.services.html" title="app.services package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="app.api.html" title="app.api package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="app.html" >app package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.models package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Jan Paweł Mateusz.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    </div>
+  </body>
+</html>

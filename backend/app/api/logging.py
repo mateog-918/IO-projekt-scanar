@@ -1,6 +1,10 @@
 """
-API endpoints for accessing event logs
+Logging API Module
+------------------
+This module provides endpoints for retrieving and filtering event logs, 
+generating statistics, and accessing captured verification images.
 """
+
 from flask import Blueprint, request, jsonify, send_file
 from datetime import datetime
 import os
@@ -13,14 +17,23 @@ logging_bp = Blueprint('logging', __name__, url_prefix='/api/logs')
 @logging_bp.route('/', methods=['GET'])
 def get_all_logs():
     """
-    Get all logs with optional pagination
+    Retrieves all logs with optional pagination.
     
-    Query parameters:
-        limit: Number of results per page (default: 100)
-        offset: Number of results to skip (default: 0)
+    **Query Parameters:**
+        * **limit** (int): Number of results per page (default: 100).
+        * **offset** (int): Number of results to skip (default: 0).
         
-    Returns:
-        JSON with logs and pagination info
+    **Returns:**
+
+    .. code-block:: json
+
+        {
+            "success": true,
+            "total": 500,
+            "limit": 100,
+            "offset": 0,
+            "logs": []
+        }
     """
     try:
         limit = request.args.get('limit', 100, type=int)
@@ -42,17 +55,14 @@ def get_all_logs():
 @logging_bp.route('/type/<event_type>', methods=['GET'])
 def get_logs_by_event_type(event_type):
     """
-    Get logs filtered by event type
+    Retrieves logs filtered by a specific event type.
     
-    URL parameters:
-        event_type: Event type filter (INVALID_QR, FACE_MISMATCH, VERIFICATION_SUCCESS, etc.)
+    **URL Parameters:**
+        * **event_type** (str): The type filter (e.g., 'INVALID_QR').
         
-    Query parameters:
-        limit: Number of results per page (default: 100)
-        offset: Number of results to skip (default: 0)
-        
-    Returns:
-        JSON with filtered logs and pagination info
+    **Query Parameters:**
+        * **limit** (int): Results per page.
+        * **offset** (int): Results skip count.
     """
     try:
         limit = request.args.get('limit', 100, type=int)
@@ -75,17 +85,10 @@ def get_logs_by_event_type(event_type):
 @logging_bp.route('/employee/<int:employee_id>', methods=['GET'])
 def get_logs_by_employee(employee_id):
     """
-    Get logs for a specific employee
+    Retrieves all logs associated with a specific employee.
     
-    URL parameters:
-        employee_id: Employee ID
-        
-    Query parameters:
-        limit: Number of results per page (default: 100)
-        offset: Number of results to skip (default: 0)
-        
-    Returns:
-        JSON with employee logs and pagination info
+    **URL Parameters:**
+        * **employee_id** (int): The ID of the employee.
     """
     try:
         limit = request.args.get('limit', 100, type=int)
@@ -108,16 +111,11 @@ def get_logs_by_employee(employee_id):
 @logging_bp.route('/date-range', methods=['GET'])
 def get_logs_date_range():
     """
-    Get logs within a date range
+    Retrieves logs within a specified date and time range.
     
-    Query parameters:
-        start_date: Start date (ISO format: 2024-01-01T00:00:00)
-        end_date: End date (ISO format: 2024-01-31T23:59:59)
-        limit: Number of results per page (default: 100)
-        offset: Number of results to skip (default: 0)
-        
-    Returns:
-        JSON with filtered logs and pagination info
+    **Query Parameters:**
+        * **start_date** (str): Start date in ISO format.
+        * **end_date** (str): End date in ISO format.
     """
     try:
         start_date_str = request.args.get('start_date')
@@ -126,7 +124,7 @@ def get_logs_date_range():
         if not start_date_str or not end_date_str:
             return jsonify({
                 'success': False,
-                'error': 'start_date and end_date parameters are required (ISO format)'
+                'error': 'start_date and end_date parameters are required'
             }), 400
         
         start_date = datetime.fromisoformat(start_date_str)
@@ -155,10 +153,19 @@ def get_logs_date_range():
 @logging_bp.route('/statistics', methods=['GET'])
 def get_statistics():
     """
-    Get event statistics (count by event type)
+    Retrieves aggregated statistics of event counts grouped by type.
     
-    Returns:
-        JSON with event type statistics
+    **Returns:**
+
+    .. code-block:: json
+
+        {
+            "success": true,
+            "statistics": {
+                "VERIFICATION_SUCCESS": 150,
+                "FACE_MISMATCH": 12
+            }
+        }
     """
     try:
         stats = LoggingService.get_event_statistics()
@@ -174,13 +181,7 @@ def get_statistics():
 @logging_bp.route('/image/<log_id>', methods=['GET'])
 def get_log_image(log_id):
     """
-    Get the image associated with a log entry
-    
-    URL parameters:
-        log_id: Event log ID
-        
-    Returns:
-        Image file or error JSON
+    Serves the physical image file associated with a specific log entry.
     """
     try:
         from app.models.event_log import EventLog
@@ -191,9 +192,8 @@ def get_log_image(log_id):
             return jsonify({'success': False, 'error': 'Log entry not found'}), 404
         
         if not log.image_path:
-            return jsonify({'success': False, 'error': 'No image associated with this log'}), 404
+            return jsonify({'success': False, 'error': 'No image associated'}), 404
         
-        # Construct full path
         base_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
         full_path = os.path.join(base_path, log.image_path)
         
@@ -208,17 +208,10 @@ def get_log_image(log_id):
 @logging_bp.route('/event-types', methods=['GET'])
 def get_event_types():
     """
-    Get all available event types
-    
-    Returns:
-        JSON with list of available event types
+    Retrieves a list of all possible event types used by the system.
     """
     try:
         event_types = [et.value for et in EventType]
-        
-        return jsonify({
-            'success': True,
-            'event_types': event_types
-        }), 200
+        return jsonify({'success': True, 'event_types': event_types}), 200
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
