@@ -4,6 +4,9 @@
 2. Uruchom w przeglądarce plik [app.html](html/app.html)
 
 ## Generowanie nowej dokumentacji
+
+Uwaga to usunie poprzenią dokumentację!
+
 1. Upewnij się że jest w docs/ directory
 
 <pre>
