@@ -12,7 +12,7 @@
 
 ### 1. Clone and Navigate
 ```bash
-git clone https://github.com/mateog-918/IO-projekt-scanar.git
+git clone https://github.com/agh-projects/IO-projekt-scanar.git
 cd IO-projekt-scanar
 ```
 
