@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>app.api package &#8212; Scanar 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="app.models package" href="app.models.html" />
+    <link rel="prev" title="app package" href="app.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="app.models.html" title="app.models package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="app.html" title="app package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="app.html" accesskey="U">app package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.api package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="app-api-package">
+<h1>app.api package<a class="headerlink" href="#app-api-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-app.api.auth">
+<span id="app-api-auth-module"></span><h2>app.api.auth module<a class="headerlink" href="#module-app.api.auth" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.auth.login">
+<span class="sig-prename descclassname"><span class="pre">app.api.auth.</span></span><span class="sig-name descname"><span class="pre">login</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/auth.html#login"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.auth.login" title="Link to this definition">¶</a></dt>
+<dd><p>Authenticates an administrator and starts a session.</p>
+<p><strong>Expected JSON Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin123&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Returns:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Login successful&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;admin&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;administrator&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON response with authentication status.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>flask.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.auth.login_required">
+<span class="sig-prename descclassname"><span class="pre">app.api.auth.</span></span><span class="sig-name descname"><span class="pre">login_required</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/auth.html#login_required"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.auth.login_required" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator to protect routes that require authentication.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.auth.logout">
+<span class="sig-prename descclassname"><span class="pre">app.api.auth.</span></span><span class="sig-name descname"><span class="pre">logout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/auth.html#logout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.auth.logout" title="Link to this definition">¶</a></dt>
+<dd><p>Logout endpoint - clears session</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.auth.status">
+<span class="sig-prename descclassname"><span class="pre">app.api.auth.</span></span><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/auth.html#status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.auth.status" title="Link to this definition">¶</a></dt>
+<dd><p>Check if user is logged in</p>
+</dd></dl>
+
+</section>
+<section id="module-app.api.logging">
+<span id="app-api-logging-module"></span><h2>app.api.logging module<a class="headerlink" href="#module-app.api.logging" title="Link to this heading">¶</a></h2>
+<section id="logging-api-module">
+<h3>Logging API Module<a class="headerlink" href="#logging-api-module" title="Link to this heading">¶</a></h3>
+<p>This module provides endpoints for retrieving and filtering event logs,
+generating statistics, and accessing captured verification images.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_all_logs">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_all_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_all_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_all_logs" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all logs with optional pagination.</p>
+<dl class="simple">
+<dt><strong>Query Parameters:</strong></dt><dd><ul class="simple">
+<li><p><strong>limit</strong> (int): Number of results per page (default: 100).</p></li>
+<li><p><strong>offset</strong> (int): Number of results to skip (default: 0).</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Returns:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;limit&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;offset&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;logs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_event_types">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_event_types</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_event_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_event_types" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of all possible event types used by the system.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_log_image">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_log_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_log_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_log_image" title="Link to this definition">¶</a></dt>
+<dd><p>Serves the physical image file associated with a specific log entry.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_logs_by_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_logs_by_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_logs_by_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_logs_by_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all logs associated with a specific employee.</p>
+<dl class="simple">
+<dt><strong>URL Parameters:</strong></dt><dd><ul class="simple">
+<li><p><strong>employee_id</strong> (int): The ID of the employee.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_logs_by_event_type">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_logs_by_event_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_logs_by_event_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_logs_by_event_type" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves logs filtered by a specific event type.</p>
+<dl class="simple">
+<dt><strong>URL Parameters:</strong></dt><dd><ul class="simple">
+<li><p><strong>event_type</strong> (str): The type filter (e.g., ‘INVALID_QR’).</p></li>
+</ul>
+</dd>
+<dt><strong>Query Parameters:</strong></dt><dd><ul class="simple">
+<li><p><strong>limit</strong> (int): Results per page.</p></li>
+<li><p><strong>offset</strong> (int): Results skip count.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_logs_date_range">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_logs_date_range</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_logs_date_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_logs_date_range" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves logs within a specified date and time range.</p>
+<dl class="simple">
+<dt><strong>Query Parameters:</strong></dt><dd><ul class="simple">
+<li><p><strong>start_date</strong> (str): Start date in ISO format.</p></li>
+<li><p><strong>end_date</strong> (str): End date in ISO format.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.logging.get_statistics">
+<span class="sig-prename descclassname"><span class="pre">app.api.logging.</span></span><span class="sig-name descname"><span class="pre">get_statistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/logging.html#get_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.logging.get_statistics" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves aggregated statistics of event counts grouped by type.</p>
+<p><strong>Returns:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;statistics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;VERIFICATION_SUCCESS&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;FACE_MISMATCH&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-app.api.manage_employees">
+<span id="app-api-manage-employees-module"></span><h2>app.api.manage_employees module<a class="headerlink" href="#module-app.api.manage_employees" title="Link to this heading">¶</a></h2>
+<section id="employee-management-api-module">
+<h3>Employee Management API Module<a class="headerlink" href="#employee-management-api-module" title="Link to this heading">¶</a></h3>
+<p>This module provides the Flask Blueprint and routes for CRUD operations
+on employees, QR code generation, and biometric data management.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.activate_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">activate_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#activate_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.activate_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Sets an employee’s status back to active.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.add_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">add_employee</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#add_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.add_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new employee record in the database.</p>
+<p>This endpoint initializes the employee profile but does not automatically
+generate a QR code or upload face images.</p>
+<p><strong>Expected JSON:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jan Kowalski&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;position&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Engineer&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;department&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IT&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A success flag and the serialized employee dictionary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.add_employee_face">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">add_employee_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#add_employee_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.add_employee_face" title="Link to this definition">¶</a></dt>
+<dd><p>Uploads a face image and extracts biometric encodings for an employee.</p>
+<p>Expects a multipart/form-data request with a file field named ‘image’.
+The system extracts the first detected face and stores it in one of the
+5 available slots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>employee_id</strong> (<em>int</em>) – Target employee ID.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path to the stored image and the updated face count.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.deactivate_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">deactivate_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#deactivate_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.deactivate_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Sets an employee’s status to inactive (Soft Delete).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.delete_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">delete_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#delete_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.delete_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Permanently deletes an employee and all associated files (Hard Delete).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>confirm</strong> (<em>str</em>) – Query parameter. Must be ‘true’ to confirm deletion.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.delete_employee_face">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">delete_employee_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#delete_employee_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.delete_employee_face" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a specific face encoding and its image file from the employee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> (<em>int</em>) – Employee ID.</p></li>
+<li><p><strong>face_index</strong> (<em>int</em>) – Index (1 to 5) of the face slot to clear.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.generate_employee_qr">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">generate_employee_qr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#generate_employee_qr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.generate_employee_qr" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a unique QR code hash for an employee.</p>
+<p>This hash is used to generate the physical QR code for verification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>employee_id</strong> (<em>int</em>) – The unique ID of the employee.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Success status and the generated QR hash string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.get_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">get_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#get_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.get_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a single employee’s data by their ID.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.get_employees">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">get_employees</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#get_employees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.get_employees" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves a list of all employees in the system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>active</strong> (<em>str</em>) – Optional query param. ‘true’ (default), ‘false’, or ‘all’.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of employee dictionaries.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>JSON</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.manage_employees.update_employee">
+<span class="sig-prename descclassname"><span class="pre">app.api.manage_employees.</span></span><span class="sig-name descname"><span class="pre">update_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/manage_employees.html#update_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.manage_employees.update_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Updates basic employee details.</p>
+<p><strong>Allowed JSON fields:</strong> <cite>name</cite>, <cite>position</cite>, <cite>department</cite>.</p>
+</dd></dl>
+
+</section>
+<section id="module-app.api.verification">
+<span id="app-api-verification-module"></span><h2>app.api.verification module<a class="headerlink" href="#module-app.api.verification" title="Link to this heading">¶</a></h2>
+<section id="verification-api-endpoints">
+<h3>Verification API Endpoints<a class="headerlink" href="#verification-api-endpoints" title="Link to this heading">¶</a></h3>
+<p>Blueprints for verification-related API endpoints, handling QR code
+validation and face matching logic.</p>
+</section>
+<dl class="py data">
+<dt class="sig sig-object py" id="app.api.verification.QR_FOLDER">
+<span class="sig-prename descclassname"><span class="pre">app.api.verification.</span></span><span class="sig-name descname"><span class="pre">QR_FOLDER</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'./static/qr_codes'</span></span><a class="headerlink" href="#app.api.verification.QR_FOLDER" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the folder where generated QR codes are stored</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.verification.match_employee_face">
+<span class="sig-prename descclassname"><span class="pre">app.api.verification.</span></span><span class="sig-name descname"><span class="pre">match_employee_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/verification.html#match_employee_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.verification.match_employee_face" title="Link to this definition">¶</a></dt>
+<dd><p>Matches a captured face image against the stored encodings for an employee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>employee_id</strong> (<em>int</em>) – The ID of the employee to verify.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><strong>Request:</strong></dt><dd><p>Multipart/form-data with a file field named <code class="docutils literal notranslate"><span class="pre">image</span></code>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>JSON indicating match status and the log ID.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;match&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;log_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.verification.save_qr">
+<span class="sig-prename descclassname"><span class="pre">app.api.verification.</span></span><span class="sig-name descname"><span class="pre">save_qr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/verification.html#save_qr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.verification.save_qr" title="Link to this definition">¶</a></dt>
+<dd><p>Saves a generated QR code image to the local filesystem.</p>
+<p>Expects a JSON payload with a base64 image, employee name, and ID.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data:image/png;base64,...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jan Kowalski&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.api.verification.verify_qr">
+<span class="sig-prename descclassname"><span class="pre">app.api.verification.</span></span><span class="sig-name descname"><span class="pre">verify_qr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/api/verification.html#verify_qr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.api.verification.verify_qr" title="Link to this definition">¶</a></dt>
+<dd><p>Verifies a scanned QR code and logs the scan event.</p>
+<p>Expects a JSON payload containing the QR hash and an optional image.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;qr_data&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hash_qr_kodu&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;image&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;base64_encoded_image_optional&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A JSON response and an HTTP status code.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;success&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Witaj! Jan Kowalski&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;employee&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jan Kowalski&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;position&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Engineer&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;department&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IT&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-app.api">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.api" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">app.api package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-app.api.auth">app.api.auth module</a><ul>
+<li><a class="reference internal" href="#app.api.auth.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.auth.login_required"><code class="docutils literal notranslate"><span class="pre">login_required()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.auth.logout"><code class="docutils literal notranslate"><span class="pre">logout()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.auth.status"><code class="docutils literal notranslate"><span class="pre">status()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.api.logging">app.api.logging module</a><ul>
+<li><a class="reference internal" href="#logging-api-module">Logging API Module</a></li>
+<li><a class="reference internal" href="#app.api.logging.get_all_logs"><code class="docutils literal notranslate"><span class="pre">get_all_logs()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.logging.get_event_types"><code class="docutils literal notranslate"><span class="pre">get_event_types()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.logging.get_log_image"><code class="docutils literal notranslate"><span class="pre">get_log_image()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.logging.get_logs_by_employee"><code class="docutils literal notranslate"><span class="pre">get_logs_by_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.logging.get_logs_by_event_type"><code class="docutils literal notranslate"><span class="pre">get_logs_by_event_type()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.logging.get_logs_date_range"><code class="docutils literal notranslate"><span class="pre">get_logs_date_range()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.logging.get_statistics"><code class="docutils literal notranslate"><span class="pre">get_statistics()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.api.manage_employees">app.api.manage_employees module</a><ul>
+<li><a class="reference internal" href="#employee-management-api-module">Employee Management API Module</a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.activate_employee"><code class="docutils literal notranslate"><span class="pre">activate_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.add_employee"><code class="docutils literal notranslate"><span class="pre">add_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.add_employee_face"><code class="docutils literal notranslate"><span class="pre">add_employee_face()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.deactivate_employee"><code class="docutils literal notranslate"><span class="pre">deactivate_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.delete_employee"><code class="docutils literal notranslate"><span class="pre">delete_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.delete_employee_face"><code class="docutils literal notranslate"><span class="pre">delete_employee_face()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.generate_employee_qr"><code class="docutils literal notranslate"><span class="pre">generate_employee_qr()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.get_employee"><code class="docutils literal notranslate"><span class="pre">get_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.get_employees"><code class="docutils literal notranslate"><span class="pre">get_employees()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.manage_employees.update_employee"><code class="docutils literal notranslate"><span class="pre">update_employee()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.api.verification">app.api.verification module</a><ul>
+<li><a class="reference internal" href="#verification-api-endpoints">Verification API Endpoints</a></li>
+<li><a class="reference internal" href="#app.api.verification.QR_FOLDER"><code class="docutils literal notranslate"><span class="pre">QR_FOLDER</span></code></a></li>
+<li><a class="reference internal" href="#app.api.verification.match_employee_face"><code class="docutils literal notranslate"><span class="pre">match_employee_face()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.verification.save_qr"><code class="docutils literal notranslate"><span class="pre">save_qr()</span></code></a></li>
+<li><a class="reference internal" href="#app.api.verification.verify_qr"><code class="docutils literal notranslate"><span class="pre">verify_qr()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.api">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="app.html"
+                          title="previous chapter">app package</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="app.models.html"
+                          title="next chapter">app.models package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/app.api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="app.models.html" title="app.models package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="app.html" title="app package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="app.html" >app package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.api package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Jan Paweł Mateusz.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    </div>
+  </body>
+</html>

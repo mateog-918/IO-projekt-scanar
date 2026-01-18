@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>app.services package &#8212; Scanar 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
+    
+    <script src="_static/documentation_options.js?v=f2a433a1"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="app.models package" href="app.models.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="app.models.html" title="app.models package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="app.html" accesskey="U">app package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.services package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="app-services-package">
+<h1>app.services package<a class="headerlink" href="#app-services-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-app.services.face_recog">
+<span id="app-services-face-recog-module"></span><h2>app.services.face_recog module<a class="headerlink" href="#module-app.services.face_recog" title="Link to this heading">¶</a></h2>
+<section id="face-recognition-service">
+<h3>Face Recognition Service<a class="headerlink" href="#face-recognition-service" title="Link to this heading">¶</a></h3>
+<p>This module provides utility functions for handling face encodings, including
+conversion between binary storage and NumPy arrays, and logic for matching
+embeddings against stored employee data.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.add_face_encoding">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">add_face_encoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><span class="pre">Employee</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">vec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#add_face_encoding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.add_face_encoding" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a new face encoding to the first available slot (1-5).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emp</strong> (<a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><em>Employee</em></a>) – The employee instance to update.</p></li>
+<li><p><strong>vec</strong> (<em>np.ndarray</em>) – The new face encoding vector.</p></li>
+<li><p><strong>image_path</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – filesystem path to the source image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the encoding was added, False if all slots were full.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.count_face_encodings">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">count_face_encodings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><span class="pre">Employee</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#count_face_encodings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.count_face_encodings" title="Link to this definition">¶</a></dt>
+<dd><p>Counts how many face encoding slots are currently filled for an employee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emp</strong> (<a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><em>Employee</em></a>) – The employee instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Number of stored encodings (0 to 5).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.decode_from_bytes">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">decode_from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#decode_from_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.decode_from_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>Converts binary data from the database back into a NumPy array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bytes</em>) – The binary float32 data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The reconstructed face encoding vector.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.encode_to_bytes">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">encode_to_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#encode_to_bytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.encode_to_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a NumPy encoding vector into a binary format for database storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>vec</strong> (<em>np.ndarray</em>) – The face encoding vector (usually 128 or 1024 dimensions).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The float32 representation of the vector in bytes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bytes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.get_face_encodings">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">get_face_encodings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><span class="pre">Employee</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#get_face_encodings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.get_face_encodings" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves all available face encodings for a given employee.</p>
+<p>Scans all five potential encoding slots in the Employee model and
+decodes any that are not null.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emp</strong> (<a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><em>Employee</em></a>) – The employee instance to scan.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 2D array of shape (N, D) where N is the number of encodings
+found and D is the vector dimension. Returns an empty array if none found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.matches_embedding">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">matches_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><span class="pre">Employee</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">query_vec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'euclidean'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#matches_embedding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.matches_embedding" title="Link to this definition">¶</a></dt>
+<dd><p>Compares a new face embedding against all stored encodings for an employee.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emp</strong> (<a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><em>Employee</em></a>) – The employee to verify against.</p></li>
+<li><p><strong>query_vec</strong> (<em>np.ndarray</em>) – The encoding vector from the camera.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – The maximum distance to consider a ‘match’.
+Lower is stricter. Defaults to 0.6.</p></li>
+<li><p><strong>metric</strong> (<em>str</em>) – The distance calculation method (‘euclidean’ or ‘cosine’).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if any stored encoding is within the threshold distance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an unsupported metric is provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.matches_face_image">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">matches_face_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><span class="pre">Employee</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.6</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#matches_face_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.matches_face_image" title="Link to this definition">¶</a></dt>
+<dd><p>Processes a raw image and checks if it matches the stored employee encodings.</p>
+<p>This is a high-level wrapper that performs face detection and encoding
+extraction before calling <a class="reference internal" href="#app.services.face_recog.matches_embedding" title="app.services.face_recog.matches_embedding"><code class="xref py py-func docutils literal notranslate"><span class="pre">matches_embedding()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emp</strong> (<a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><em>Employee</em></a>) – The employee to verify.</p></li>
+<li><p><strong>image_bytes</strong> (<em>bytes</em>) – Raw bytes of the image (e.g., from a request).</p></li>
+<li><p><strong>tolerance</strong> (<em>float</em>) – Matching strictness. Defaults to 0.6.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if a face is detected and matches.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If the <cite>face_recognition</cite> library is not installed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="app.services.face_recog.remove_face_encoding">
+<span class="sig-prename descclassname"><span class="pre">app.services.face_recog.</span></span><span class="sig-name descname"><span class="pre">remove_face_encoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><span class="pre">Employee</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/app/services/face_recog.html#remove_face_encoding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.face_recog.remove_face_encoding" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the face encoding and associated image path at a specific slot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>emp</strong> (<a class="reference internal" href="app.models.html#app.models.employee.Employee" title="app.models.employee.Employee"><em>Employee</em></a>) – The employee instance.</p></li>
+<li><p><strong>index</strong> (<em>int</em>) – The slot index to clear (1-based, 1 to 5).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-app.services.logging_service">
+<span id="app-services-logging-service-module"></span><h2>app.services.logging_service module<a class="headerlink" href="#module-app.services.logging_service" title="Link to this heading">¶</a></h2>
+<p>Logging service for handling event logging and retrieval</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.services.logging_service.</span></span><span class="sig-name descname"><span class="pre">LoggingService</span></span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Service for logging and retrieving verification events</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.IMAGE_STORAGE_DIR">
+<span class="sig-name descname"><span class="pre">IMAGE_STORAGE_DIR</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/Users/janogieglo/Studia/IO/IO-projekt-scanar/backend/static/logs'</span></span><a class="headerlink" href="#app.services.logging_service.LoggingService.IMAGE_STORAGE_DIR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.ensure_log_dir_exists">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ensure_log_dir_exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.ensure_log_dir_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.ensure_log_dir_exists" title="Link to this definition">¶</a></dt>
+<dd><p>Ensure the log image storage directory exists</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.get_all_logs">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_all_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.get_all_logs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.get_all_logs" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve all logs with optional pagination</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>limit</strong> – Maximum number of results</p></li>
+<li><p><strong>offset</strong> – Number of results to skip</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list of EventLog entries, total count)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.get_event_statistics">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_event_statistics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.get_event_statistics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.get_event_statistics" title="Link to this definition">¶</a></dt>
+<dd><p>Get statistics about events</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Event type counts and total</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.get_logs_by_employee">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_logs_by_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.get_logs_by_employee"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.get_logs_by_employee" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve logs for a specific employee</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> – Employee ID to filter by</p></li>
+<li><p><strong>limit</strong> – Maximum number of results</p></li>
+<li><p><strong>offset</strong> – Number of results to skip</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list of EventLog entries, total count)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.get_logs_by_type">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_logs_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.get_logs_by_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.get_logs_by_type" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve logs filtered by event type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_type</strong> – EventType to filter by (string or enum)</p></li>
+<li><p><strong>limit</strong> – Maximum number of results</p></li>
+<li><p><strong>offset</strong> – Number of results to skip</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list of EventLog entries, total count)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.get_logs_date_range">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">get_logs_date_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.get_logs_date_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.get_logs_date_range" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve logs within a date range</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_date</strong> – Start datetime</p></li>
+<li><p><strong>end_date</strong> – End datetime</p></li>
+<li><p><strong>limit</strong> – Maximum number of results</p></li>
+<li><p><strong>offset</strong> – Number of results to skip</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(list of EventLog entries, total count)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.log_event">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">log_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qr_code_hash</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_bytes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.log_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.log_event" title="Link to this definition">¶</a></dt>
+<dd><p>Log a verification event to the database</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event_type</strong> – EventType enum or string (e.g., ‘INVALID_QR’, ‘FACE_MISMATCH’, ‘VERIFICATION_SUCCESS’)</p></li>
+<li><p><strong>employee_id</strong> – ID of the employee (may be None for invalid QR)</p></li>
+<li><p><strong>qr_code_hash</strong> – The QR code hash that was scanned</p></li>
+<li><p><strong>image_bytes</strong> – Binary image data from camera (optional)</p></li>
+<li><p><strong>message</strong> – Additional message/context for the event</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created event log entry</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="app.models.html#app.models.event_log.EventLog" title="app.models.event_log.EventLog">EventLog</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.logging_service.LoggingService.save_image">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">save_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_bytes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/logging_service.html#LoggingService.save_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.logging_service.LoggingService.save_image" title="Link to this definition">¶</a></dt>
+<dd><p>Save image bytes to disk and return the file path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_bytes</strong> – Binary image data</p></li>
+<li><p><strong>event_type</strong> – Type of event (for organization)</p></li>
+<li><p><strong>employee_id</strong> – Optional employee ID for organization</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Relative file path to saved image or None if save failed</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.services.qr_service">
+<span id="app-services-qr-service-module"></span><h2>app.services.qr_service module<a class="headerlink" href="#module-app.services.qr_service" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="app.services.qr_service.QRService">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">app.services.qr_service.</span></span><span class="sig-name descname"><span class="pre">QRService</span></span><a class="reference internal" href="_modules/app/services/qr_service.html#QRService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.qr_service.QRService" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.qr_service.QRService.generate_qr_code">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">generate_qr_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/qr_service.html#QRService.generate_qr_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.qr_service.QRService.generate_qr_code" title="Link to this definition">¶</a></dt>
+<dd><p>Generuje unikalny QR kod dla pracownika</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>employee_id</strong> – ID pracownika</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Unikalny hash QR</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="app.services.qr_service.QRService.validate_qr_code">
+<span class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">validate_qr_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qr_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/app/services/qr_service.html#QRService.validate_qr_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#app.services.qr_service.QRService.validate_qr_code" title="Link to this definition">¶</a></dt>
+<dd><p>Waliduje QR kod i zwraca dane pracownika</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>qr_data</strong> – String z QR kodu (np. “EMP123456789”)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>{‘success’: bool, ‘employee’: dict, ‘message’: str}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-app.services">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-app.services" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">app.services package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-app.services.face_recog">app.services.face_recog module</a><ul>
+<li><a class="reference internal" href="#face-recognition-service">Face Recognition Service</a></li>
+<li><a class="reference internal" href="#app.services.face_recog.add_face_encoding"><code class="docutils literal notranslate"><span class="pre">add_face_encoding()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.count_face_encodings"><code class="docutils literal notranslate"><span class="pre">count_face_encodings()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.decode_from_bytes"><code class="docutils literal notranslate"><span class="pre">decode_from_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.encode_to_bytes"><code class="docutils literal notranslate"><span class="pre">encode_to_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.get_face_encodings"><code class="docutils literal notranslate"><span class="pre">get_face_encodings()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.matches_embedding"><code class="docutils literal notranslate"><span class="pre">matches_embedding()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.matches_face_image"><code class="docutils literal notranslate"><span class="pre">matches_face_image()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.face_recog.remove_face_encoding"><code class="docutils literal notranslate"><span class="pre">remove_face_encoding()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.services.logging_service">app.services.logging_service module</a><ul>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService"><code class="docutils literal notranslate"><span class="pre">LoggingService</span></code></a><ul>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.IMAGE_STORAGE_DIR"><code class="docutils literal notranslate"><span class="pre">LoggingService.IMAGE_STORAGE_DIR</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.ensure_log_dir_exists"><code class="docutils literal notranslate"><span class="pre">LoggingService.ensure_log_dir_exists()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.get_all_logs"><code class="docutils literal notranslate"><span class="pre">LoggingService.get_all_logs()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.get_event_statistics"><code class="docutils literal notranslate"><span class="pre">LoggingService.get_event_statistics()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.get_logs_by_employee"><code class="docutils literal notranslate"><span class="pre">LoggingService.get_logs_by_employee()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.get_logs_by_type"><code class="docutils literal notranslate"><span class="pre">LoggingService.get_logs_by_type()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.get_logs_date_range"><code class="docutils literal notranslate"><span class="pre">LoggingService.get_logs_date_range()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.log_event"><code class="docutils literal notranslate"><span class="pre">LoggingService.log_event()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.logging_service.LoggingService.save_image"><code class="docutils literal notranslate"><span class="pre">LoggingService.save_image()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.services.qr_service">app.services.qr_service module</a><ul>
+<li><a class="reference internal" href="#app.services.qr_service.QRService"><code class="docutils literal notranslate"><span class="pre">QRService</span></code></a><ul>
+<li><a class="reference internal" href="#app.services.qr_service.QRService.generate_qr_code"><code class="docutils literal notranslate"><span class="pre">QRService.generate_qr_code()</span></code></a></li>
+<li><a class="reference internal" href="#app.services.qr_service.QRService.validate_qr_code"><code class="docutils literal notranslate"><span class="pre">QRService.validate_qr_code()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-app.services">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="app.models.html"
+                          title="previous chapter">app.models package</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/app.services.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="app.models.html" title="app.models package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">Scanar 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >app</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="app.html" >app package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">app.services package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2026, Jan Paweł Mateusz.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    </div>
+  </body>
+</html>
