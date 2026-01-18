@@ -10,7 +10,27 @@ from app.models.event_log import EventLog  # Import EventLog model
 
 def create_app():
     app = Flask(__name__)
-    Swagger(app)
+    
+    # Swagger configuration
+    swagger_config = {
+        "headers": [],
+        "specs": [
+            {
+                "endpoint": 'apispec',
+                "route": '/apispec.json',
+                "rule_filter": lambda rule: True,
+                "model_filter": lambda tag: True,
+            }
+        ],
+        "static_url_path": "/flasgger_static",
+        "swagger_ui": True,
+        "specs_route": "/apidocs/"
+    }
+    
+    # Load swagger.yaml file
+    swagger_yaml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'swagger.yaml')
+    
+    Swagger(app, config=swagger_config, template_file=swagger_yaml_path)
 
     # Secret key for session management
     app.config['SECRET_KEY'] = 'your-secret-key-change-in-production-12345'
