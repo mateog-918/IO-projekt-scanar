@@ -50,7 +50,7 @@ def add_employee():
             name=data['name'],
             position=data.get('position', ''),
             department=data.get('department', ''),
-            qr_code_hash=''
+            qr_code_hash=None
         )
 
         db.session.add(employee)

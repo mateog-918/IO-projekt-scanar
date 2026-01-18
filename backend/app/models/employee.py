@@ -35,7 +35,7 @@ class Employee(db.Model):
     department = db.Column(db.String(100))
 
     #: Unique hash generated from the employee's QR code
-    qr_code_hash = db.Column(db.String(255), unique=True, nullable=False)
+    qr_code_hash = db.Column(db.String(255), unique=True, nullable=True)
 
     # Face Encodings (Binary Data)
     #: First face encoding (stored as binary float32 array)
