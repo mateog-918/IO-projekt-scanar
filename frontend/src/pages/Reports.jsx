@@ -184,12 +184,12 @@ const Reports = () => {
         doc.text(`${dateRange} | Generated: ${new Date().toLocaleDateString()}`, 14, 30);
 
         // Przygotowanie danych do tabeli
-        const tableColumn = ["ID", "Timestamp", "Event Type", "Employee", "Message"];
+        const tableColumn = ["ID", "Timestamp", "Event Type", "Employee_ID", "Message"];
         const tableRows = logs.map(log => [
             log.id,
             formatTimestamp(log.timestamp),
             log.event_type,
-            log.employee_name || log.employee_id || '-',
+            log.employee_id || 'Employee Deleted',
             log.message || '-'
         ]);
 
