@@ -1,0 +1,114 @@
+@startuml User Verification Sequence Diagram
+title Diagram sekwencyjny - Weryfikacja dostępu pracownika
+
+actor Pracownik as User
+participant "Interfejs\nWeryfikacji" as UI
+participant "System\nSCANAR" as System
+participant "Moduł\nQR" as QR
+participant "Moduł\nRozpoznawania\nTwarzy" as Face
+database "Baza\nDanych" as DB
+participant "Moduł\nLogowania" as Log
+
+== Etap 1: Skanowanie kodu QR ==
+
+User -> UI: Prezentuje kod QR\n(smartfon/karta)
+activate UI
+
+UI -> UI: Inicjalizacja kamery
+
+UI -> QR: Skanuj kod QR
+activate QR
+
+QR -> QR: Przetwarzanie obrazu\nz kamery
+
+alt Kod QR odczytany
+    QR -> System: Przesłanie hash kodu QR
+    activate System
+    
+    System -> DB: Sprawdź ważność\nkodu QR
+    activate DB
+    
+    DB -> DB: Wybierz pracownika z pasującym kodem QR
+    DB -> DB: Sprawdź czy is_active lub is_inactive
+    
+    alt Kod QR prawidłowy i aktywny
+        DB --> System: Dane pracownika\n(id, name, is_active)
+        deactivate DB
+        
+        System -> Log: Zapisz zdarzenie\nQR_SCANNED
+        activate Log
+        Log -> DB: INSERT event_log
+        deactivate Log
+        
+        System --> UI: Kod QR zweryfikowany\nPrzejdź do etapu 2
+        UI --> User: Wyświetl komunikat:\n"Kod prawidłowy."
+        
+        == Etap 2: Rozpoznawanie twarzy ==
+        
+        UI -> UI: Aktywacja kamery
+        User -> UI: Patrzy w kamerę
+        
+        UI -> Face: Przechwyć obraz twarzy
+        activate Face
+        
+        Face -> Face: Wykryj twarz\nna obrazie
+        
+        alt Twarz wykryta
+            Face -> System: Przesłanie obrazu\ntwarzy
+            
+            System -> DB: Pobierz wzorce twarzy\npracownika
+            activate DB
+            DB --> System: face_encoding_1-5
+            deactivate DB
+            
+            System -> Face: Porównaj z wzorcami\n(tolerancja 0.6)
+            
+            Face -> Face: Oblicz podobieństwo\nface_recognition.compare_faces()
+            
+            alt Twarz pasuje
+                Face --> System: Weryfikacja pozytywna
+                
+                System -> Log: Zapisz zdarzenie\nVERIFICATION_SUCCESS
+                activate Log
+                Log -> DB: INSERT event_log\n(employee_id, image_path)
+                deactivate Log
+                
+                System --> UI: Dostęp przyznany
+                deactivate System
+                
+                UI --> User: ✓ Dostęp przyznany
+                
+            else Twarz nie pasuje
+                Face --> System: Weryfikacja negatywna
+                
+                System -> Log: Zapisz zdarzenie\nFACE_MISMATCH
+                activate Log
+                Log -> DB: INSERT event_log\n(employee_id, image_path)
+                deactivate Log
+                
+                System --> UI: Dostęp odrzucony\n(niepasująca twarz)
+                deactivate System
+                
+                UI --> User: ✗ Dostęp odrzucony
+            end
+            
+        end
+        
+    else Kod QR nieważny/nieaktywny
+        DB --> System: Pracownik nieznaleziony\nlub is_active = false
+        deactivate DB
+        
+        System -> Log: Zapisz zdarzenie\nINVALID_QR
+        activate Log
+        Log -> DB: INSERT event_log\n(qr_code_hash)
+        deactivate Log
+        
+        System --> UI: Kod QR nieważny
+        deactivate System
+        
+        UI --> User: ✗ Nie znaleziono pracownika dla QR
+    end
+
+deactivate UI
+
+@enduml

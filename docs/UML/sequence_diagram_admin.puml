@@ -1,0 +1,230 @@
+@startuml Administrator Sequence Diagram
+title Diagram sekwencyjny - Panel administracyjny SCANAR
+
+actor Administrator as Admin
+participant "Panel\nAdministracyjny" as UI
+participant "System\nSCANAR" as System
+database "Baza\nDanych" as DB
+participant "Moduł\nQR" as QR
+participant "Moduł\nTwarzy" as Face
+
+== Etap 1: Logowanie administratora ==
+
+Admin -> UI: Otwiera panel\nadministracyjny
+activate UI
+
+UI --> Admin: Wyświetl formularz\nlogowania
+
+Admin -> UI: Wprowadza dane logowania
+
+UI -> System: POST
+activate System
+
+System -> System: Weryfikacja\nhasła
+
+alt Dane poprawne
+    System -> System: Utworzenie sesji\n(Flask session)
+    
+    System --> UI: Zalogowano pomyślnie
+    
+    UI --> Admin: Dostęp do panelu\nadministracyjnego
+    
+    == Etap 2: Zarządzanie pracownikami ==
+    
+    Admin -> UI: Wybiera opcję\n"Dodaj pracownika"
+    
+    UI --> Admin: Formularz:\nImię, stanowisko, dział
+    
+    Admin -> UI: Wypełnia formularz\n(Jan Kowalski, Inżynier, IT)
+    
+    UI -> System: POST /api/manage_employees/\n{name, position, department}
+    
+    System -> DB: INSERT INTO employees
+    activate DB
+    DB --> System: employee_id = 15
+    deactivate DB
+    
+    System --> UI: Pracownik utworzony\n(id: 15)
+    
+    UI --> Admin: ✓ Pracownik dodany\npomyślnie
+    
+    == Etap 3: Dodawanie zdjęć twarzy ==
+    
+    Admin -> UI: Wybiera pracownika (ID: 15)\nOpcja "Dodaj zdjęcie"
+    
+    UI --> Admin: Okno wyboru pliku
+    
+    Admin -> UI: Przesyła zdjęcie JPG\n(face_1.jpg)
+    
+    UI -> System: POST /api/manage_employees/15/faces\n(multipart/form-data)
+    
+    System -> Face: Wykryj twarz\nna obrazie
+    activate Face
+    
+    Face -> Face: face_recognition.face_locations()
+    
+    alt Twarz wykryta
+        Face -> Face: Generuj encoding\nface_recognition.face_encodings()
+        
+        Face --> System: face_encoding (numpy array)
+        deactivate Face
+        
+        System -> DB: UPDATE employees\nSET face_encoding_1 = ?,\nface_image_path_1 = ?
+        activate DB
+        DB --> System: Zapis OK
+        deactivate DB
+        
+        System --> UI: Zdjęcie dodane (1/5)
+        
+        UI --> Admin: ✓ Zdjęcie zapisane\n(1/5)
+        
+    else Twarz nie wykryta
+        Face --> System: Brak twarzy na obrazie
+        deactivate Face
+        
+        System --> UI: Błąd: brak twarzy
+        
+        UI --> Admin: ✗ Nie wykryto twarzy\nna zdjęciu
+    end
+    
+    == Etap 4: Generowanie kodu QR ==
+    
+    Admin -> UI: Wybiera pracownika (ID: 15)\nOpcja "Generuj kod QR"
+    
+    UI -> System: POST /api/manage_employees/15/qr
+    
+    System -> QR: Generuj unikalny hash\n(SHA-256)
+    activate QR
+    
+    QR -> QR: hash = sha256(id + time + uuid)
+    
+    QR -> QR: Generuj obraz QR\n(300x300 px PNG)
+    
+    QR --> System: qr_code_hash,\nobraz PNG
+    deactivate QR
+    
+    System -> DB: UPDATE employees\nSET qr_code_hash = ?
+    activate DB
+    DB --> System: Zapis OK
+    deactivate DB
+    
+    System --> UI: Kod QR wygenerowany\n(obraz PNG)
+    
+    UI --> Admin: Wyświetl kod QR
+    
+    == Etap 5: Przeglądanie logów dostępu ==
+    
+    Admin -> UI: Wybiera zakładkę\n"Raporty"
+    
+    UI -> System: GET /api/logs/
+    
+    System -> DB: SELECT * FROM event_logs\nORDER BY timestamp DESC
+    activate DB
+    DB --> System: Lista logów
+    deactivate DB
+    
+    System --> UI: JSON z logami\n(id, event_type, employee_name,\ntimestamp, message)
+    
+    UI --> Admin: Tabela z logami:\nID | Czas | Typ | Pracownik | Wiadomość
+    
+    Admin -> UI: Filtruje po pracowniku\n(ID: 15)
+    
+    UI -> System: GET /api/logs/employee/15
+    
+    System -> DB: SELECT * FROM event_logs\nWHERE employee_id = 15
+    activate DB
+    DB --> System: Logi pracownika 15
+    deactivate DB
+    
+    System --> UI: Przefiltrowane logi
+    
+    UI --> Admin: Tabela z logami\npracownika ID 15
+    
+    == Etap 6: Generowanie raportu PDF ==
+    
+    Admin -> UI: Klik "Pobierz PDF"
+    
+    UI -> UI: Generowanie PDF\n(jsPDF + autoTable)
+    
+    UI -> UI: Dodaj dane:\n- Tytuł raportu\n- Zakres dat\n- Tabela z logami\n- Statystyki
+    
+    UI --> Admin: Pobieranie pliku\nreport_2026-01-21.pdf
+    
+    == Etap 7: Edycja pracownika ==
+    
+    Admin -> UI: Wybiera pracownika (ID: 15)\nOpcja "Edytuj"
+    
+    UI --> Admin: Formularz z danymi:\nJan Kowalski, Inżynier, IT
+    
+    Admin -> UI: Zmienia stanowisko\nna "Senior Engineer"
+    
+    UI -> System: PUT /api/manage_employees/15\n{name, position: "Senior Engineer", department}
+    
+    System -> DB: UPDATE employees\nSET position = "Senior Engineer"\nWHERE id = 15
+    activate DB
+    DB --> System: Aktualizacja OK
+    deactivate DB
+    
+    System --> UI: Pracownik zaktualizowany
+    
+    UI --> Admin: ✓ Dane zaktualizowane
+    
+    == Etap 8: Dezaktywacja pracownika ==
+    
+    Admin -> UI: Wybiera pracownika (ID: 15)\nOpcja "Dezaktywuj".
+    
+    UI -> System: PUT /api/manage_employees/15/deactivate
+    
+    System -> DB: UPDATE employees\nSET is_active = false\nWHERE id = 15
+    activate DB
+    DB --> System: Dezaktywacja OK
+    deactivate DB
+    
+    System --> UI: Pracownik dezaktywowany
+    
+    UI --> Admin: ✓ Pracownik dezaktywowany\n(kod QR nieważny)
+    
+    == Etap 9: Usunięcie pracownika ==
+    
+    Admin -> UI: Wybiera pracownika (ID: 15)\nOpcja "Usuń"
+    
+    UI --> Admin: Potwierdzenie:\n"Trwale usunąć pracownika\ni wszystkie dane?"
+    
+    Admin -> UI: Potwierdza usunięcie
+    
+    UI -> System: DELETE /api/manage_employees/15
+    
+    System -> DB: DELETE FROM employees\nWHERE id = 15\n(CASCADE: event_logs)
+    activate DB
+    DB --> System: Usunięcie OK
+    deactivate DB
+    
+    System -> System: Usuń pliki:\n- face_images/15_*.jpg\n- qr_codes/{hash}.png
+    
+    System --> UI: Pracownik usunięty
+    
+    UI --> Admin: ✓ Pracownik usunięty
+    
+    == Etap 10: Wylogowanie ==
+    
+    Admin -> UI: Klika "Wyloguj"
+    
+    UI -> System: POST /api/auth/logout
+    
+    System -> System: Zniszczenie sesji
+    
+    System --> UI: Wylogowano
+    deactivate System
+    
+    UI --> Admin: Przekierowanie\ndo strony logowania
+    
+else Dane niepoprawne
+    System --> UI: Błąd: nieprawidłowe\ndane logowania
+    deactivate System
+    
+    UI --> Admin: ✗ Nieprawidłowy login\nlub hasło
+end
+
+deactivate UI
+
+@enduml

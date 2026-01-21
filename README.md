@@ -108,6 +108,7 @@ Comprehensive documentation is available:
 | [Documentation Hub](Documentation.md) | Central documentation index |
 | [Code Documentation](docs/Code_Documentation.md) | Auto-generated code documentation (Sphinx) |
 | [API Documentation](docs/API_Documentation.md) | Interactive API documentation (Swagger UI) |
+| [Database Documentation](docs/Database_Documentation.md) | Database schema, file storage, and data management |
 
 
 ---

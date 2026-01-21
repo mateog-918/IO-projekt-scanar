@@ -15,4 +15,7 @@ Auto-generated Sphinx documentation covering all backend functions, classes, and
 ### [API Documentation (Swagger)](docs/API_Documentation.md)
 Interactive Swagger UI documentation for all REST API endpoints. Test endpoints directly from your browser, view request/response schemas, and explore the complete API specification.
 
+### [Database Documentation](docs/Database_Documentation.md)
+Detailed information about database structure, file storage locations, and data management. Includes schema definitions, backup procedures, and storage requirements.
+
 ---

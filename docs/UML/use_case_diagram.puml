@@ -1,0 +1,57 @@
+@startuml Use Case Diagram - SCANAR System
+title Diagram przypadków użycia - System SCANAR
+
+left to right direction
+
+actor "Pracownik" as Employee
+actor "Administrator" as Admin
+
+rectangle "System SCANAR" {
+    
+    package "Weryfikacja dostępu" {
+        usecase "Prezentowanie kodu QR" as UC1
+        usecase "Weryfikacja twarzy" as UC2
+        usecase "Uzyskanie dostępu" as UC3
+    }
+    
+    package "Panel administracyjny" {
+        usecase "Logowanie do systemu" as UC4
+        usecase "Dodawanie pracownika" as UC5
+        usecase "Edycja danych pracownika" as UC6
+        usecase "Usuwanie pracownika" as UC7
+        usecase "Dezaktywacja pracownika" as UC8
+        usecase "Generowanie kodu QR" as UC9
+        usecase "Dodawanie zdjęć twarzy" as UC10
+        usecase "Przeglądanie logów dostępu" as UC11
+        usecase "Filtrowanie logów" as UC12
+        usecase "Generowanie raportu PDF" as UC13
+        usecase "Wylogowanie" as UC14
+    }
+}
+
+' Relacje dla Pracownika
+Employee --> UC1
+Employee --> UC2
+UC1 ..> UC3 : <<include>>
+UC2 ..> UC3 : <<include>>
+
+' Relacje dla Administratora
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+
+' Rozszerzenia
+UC5 ..> UC9 : <<extend>>
+UC5 ..> UC10 : <<extend>>
+UC11 ..> UC12 : <<extend>>
+UC11 ..> UC13 : <<extend>>
+
+@enduml
