@@ -82,15 +82,24 @@ class LoggingService:
             else:
                 event_type_str = str(event_type)
             
+            # Get employee name snapshot (immutable log record)
+            employee_name = None
+            if employee_id:
+                from app.models.employee import Employee
+                emp = Employee.query.get(employee_id)
+                if emp:
+                    employee_name = emp.name
+            
             # Save image if provided
             image_path = None
             if image_bytes:
                 image_path = LoggingService.save_image(image_bytes, event_type_str, employee_id)
             
-            # Create event log entry
+            # Create event log entry with snapshot of employee name
             event_log = EventLog(
                 event_type=event_type_str,
                 employee_id=employee_id,
+                employee_name=employee_name,
                 qr_code_hash=qr_code_hash,
                 image_path=image_path,
                 message=message,

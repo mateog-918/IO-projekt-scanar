@@ -21,7 +21,8 @@ const Reports = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/manage_employees/');
+            // Fetch ALL employees (active and inactive) for proper log display
+            const res = await fetch('http://localhost:5000/api/manage_employees/?active=all');
             const data = await res.json();
             if (res.ok && data.employees) {
                 setEmployees(data.employees);
@@ -164,6 +165,24 @@ const Reports = () => {
         fetchLogs(newOffset);
     };
 
+    const renderEmployeeInfo = (log) => {
+        // Show IMMUTABLE data from log snapshot - never check current employee status!
+        // Logs must remain constant and show state at the time of the event
+        
+        if (log.employee_name) {
+            // Employee existed at time of event - show name snapshot
+            return <span>{log.employee_name} <span style={{color: '#999'}}>(ID: {log.employee_id})</span></span>;
+        }
+        
+        if (log.employee_id) {
+            // Has ID but no name (shouldn't happen with new logs, but for old data)
+            return log.employee_id;
+        }
+        
+        // No employee_id and no employee_name - invalid QR code
+        return <span style={{color: '#ff6600'}}>Nieznany kod QR</span>;
+    };
+
     const downloadPDF = () => {
         const doc = new jsPDF();
 
@@ -184,14 +203,26 @@ const Reports = () => {
         doc.text(`${dateRange} | Generated: ${new Date().toLocaleDateString()}`, 14, 30);
 
         // Przygotowanie danych do tabeli
-        const tableColumn = ["ID", "Timestamp", "Event Type", "Employee_ID", "Message"];
-        const tableRows = logs.map(log => [
-            log.id,
-            formatTimestamp(log.timestamp),
-            log.event_type,
-            log.employee_id || 'Employee Deleted',
-            log.message || '-'
-        ]);
+        const tableColumn = ["ID", "Timestamp", "Event Type", "Employee", "Message"];
+        const tableRows = logs.map(log => {
+            // Use immutable snapshot data from log, same logic as renderEmployeeInfo
+            let employeeInfo;
+            if (log.employee_name) {
+                employeeInfo = `${log.employee_name} (ID: ${log.employee_id})`;
+            } else if (log.employee_id) {
+                employeeInfo = log.employee_id.toString();
+            } else {
+                employeeInfo = 'Unknown QR Code';
+            }
+            
+            return [
+                log.id,
+                formatTimestamp(log.timestamp),
+                log.event_type,
+                employeeInfo,
+                log.message || '-'
+            ];
+        });
 
         // --- Generowanie tabeli z ustawieniami szerokości ---
         autoTable(doc, {
@@ -300,7 +331,7 @@ const Reports = () => {
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>ID</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Timestamp</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Event Type</th>
-                                <th style={{ border: '1px solid #ccc', padding: 8 }}>Employee_id</th>
+                                <th style={{ border: '1px solid #ccc', padding: 8 }}>Employee</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Message</th>
                                 <th style={{ border: '1px solid #ccc', padding: 8 }}>Image</th>
                             </tr>
@@ -315,7 +346,7 @@ const Reports = () => {
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{formatTimestamp(log.timestamp)}</td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.event_type}</td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>
-                                         {log.employee_id || <span style={{color: 'red'}}>Usunięty pracownik</span>}
+                                         {renderEmployeeInfo(log)}
                                     </td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.message || '-'}</td>
                                     <td style={{ border: '1px solid #ccc', padding: 8 }}>{log.image_path ? <a href={`http://localhost:5000/${log.image_path}`} target="_blank" rel="noreferrer">View</a> : '-'}</td>

@@ -60,6 +60,9 @@ class EventLog(db.Model):
 
     #: Human-readable details or error messages regarding the event.
     message = db.Column(db.Text, nullable=True)
+    
+    #: Snapshot of employee name at the time of the event (immutable log record).
+    employee_name = db.Column(db.String(200), nullable=True)
 
     #: Timezone-aware UTC timestamp of when the event actually occurred.
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
@@ -97,5 +100,6 @@ class EventLog(db.Model):
                 if self.created_at and self.created_at.tzinfo is None 
                 else self.created_at
             ).astimezone(timezone.utc).isoformat() if self.created_at else None,
-            'employee_name': self.employee.name if self.employee else None
+            # Use stored snapshot, not dynamic relationship
+            'employee_name': self.employee_name
         }
