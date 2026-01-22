@@ -18,4 +18,10 @@ Interactive Swagger UI documentation for all REST API endpoints. Test endpoints 
 ### [Database Documentation](docs/Database_Documentation.md)
 Detailed information about database structure, file storage locations, and data management. Includes schema definitions, backup procedures, and storage requirements.
 
+### [Requirements Engineering Documentation (DIW)](docs/DIW.pdf)
+Comprehensive requirements specification document (Dokumentacja Inżynierii Wymagań). Includes competency matrix, Q&A, functional/non-functional requirements, data formats, and MVP definition.
+
+### [Test Report](docs/Tests.pdf)
+Complete software testing report (Raport z testów oprogramowania). Documents discovered bugs, tested functionalities, test results, and system validation.
+
 ---

@@ -106,6 +106,8 @@ Comprehensive documentation is available:
 |----------|-------------|
 | [Setup Instructions](Setup.md) | Complete installation and running guide |
 | [Documentation Hub](Documentation.md) | Central documentation index |
+| [Requirements Documentation (DIW)](docs/DIW.pdf) | Requirements engineering specification (Polish) |
+| [Test Report](docs/Tests.pdf) | Software testing report (Polish) |
 | [Code Documentation](docs/Code_Documentation.md) | Auto-generated code documentation (Sphinx) |
 | [API Documentation](docs/API_Documentation.md) | Interactive API documentation (Swagger UI) |
 | [Database Documentation](docs/Database_Documentation.md) | Database schema, file storage, and data management |
